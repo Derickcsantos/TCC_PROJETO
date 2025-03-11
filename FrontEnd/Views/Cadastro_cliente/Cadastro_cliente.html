@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Cadastro_cliente.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Cadastre-se</title>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2>Cadastro</h2>
+            <form action="#" method="POST">
+                <div class="input-group">
+                    <label for="name">Nome completo</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="name" name="name" placeholder="Digite seu nome completo" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" name="email" placeholder="Digite seu E-mail" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Celular</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input type="tel" id="phone" name="Phone" placeholder="Digite seu celular" required maxlength="15" oninput="formatPhone(this)">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="password">Senha</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" name="password" placeholder="Digite sua senha" required minlength="4">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label for="confirm-password">Confirme sua senha</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme sua senha" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
+            <hr class="divider">
+            <div class="footer-text">
+                Já tem uma conta? <a href="#">Acesse</a>
+            </div>
+            <div class="terms-text">
+                Acessando você concorda com o <a href="#">termo de uso</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="Cadastro_cliente.js"></script>
+</body>
+</html>
