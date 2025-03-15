@@ -58,9 +58,10 @@ h2 {
     font-size: 18px;
 }
 
-.input-wrapper input{
+.input-wrapper input,
+.input-wrapper select{
     width: 100%;
-    padding: 30px;
+    padding: 0.75rem;
     border: none;
     border-radius: 5px;
     background-color: #3a3a3a;
@@ -68,16 +69,27 @@ h2 {
     font-size: 16px;
 }
 
-.input-wrapper input::placeholder{
+.input-wrapper input::placeholder,
+.input-wrapper select option{
     color: #aaa;
 }
 
-.input-wrapper input:focus{
+.input-wrapper input:focus,
+.input-wrapper select:focus{
     outline: none;
     background-color: #4a4a4a;
 }
 
-.input-group input{
+.select-wrapper select {
+    background-color: #3A3B3C;
+    color: #EAE6EB;
+}
+
+.select-wrapper select:focus {
+    background-color: #4A4A4A;
+}
+
+.input-group select{
     width: 100%;
     padding: 0.75rem;
     background-color: #3A3B3C;
@@ -87,8 +99,12 @@ h2 {
     font-size: 1rem;
 }
 
-.input-group input::placeholder{
+.input-group select::placeholder{
     color: #B0B3BB;
+}
+
+.input-group select option {
+    color: #FFFFFF;
 }
 
 .btn{

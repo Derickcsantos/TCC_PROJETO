@@ -1,4 +1,4 @@
-import {createClient} from '@supabase/supabase-js'
+const {createClient} = require('@supabase/supabase-js')
 
 const SUPABASE_URL = 'https://mxhwmpouoajvidghhevq.supabase.co'
 
@@ -6,4 +6,4 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-export default supabase;
+module.exports = supabase

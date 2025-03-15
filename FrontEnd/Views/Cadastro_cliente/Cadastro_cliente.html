@@ -11,7 +11,7 @@
     <div class="container">
         <div class="form-container">
             <h2>Cadastro</h2>
-            <form action="#" method="POST">
+            <form id="cadastroForm">
                 <div class="input-group">
                     <label for="name">Nome completo</label>
                     <div class="input-wrapper">
@@ -47,6 +47,19 @@
                         <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirme sua senha" required>
                     </div>
                 </div>
+                <div class="input-group">
+                    <label for="region">Região</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-globe"></i>
+                        <select name="region" id="region" required>
+                            <option value="" disabled selected>Escolha sua região</option>
+                            <option value="Norte">Norte</option>
+                            <option value="Sul">Sul</option>
+                            <option value="Leste">Leste</option>
+                            <option value="Oeste">Oeste</option>
+                        </select>
+                    </div>
+                </div>
                 <button type="submit" class="btn">Cadastrar</button>
             </form>
             <hr class="divider">
@@ -59,6 +72,6 @@
         </div>
     </div>
     
-    <script src="Cadastro_cliente.js"></script>
+    <script src="cadastro_cliente.js"></script>
 </body>
 </html>
