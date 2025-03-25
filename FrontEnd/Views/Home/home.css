@@ -1,0 +1,590 @@
+* {
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+/* Certifique-se de que o body e o container ocupem a altura total da janela */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* O container principal deve ocupar o espaço restante */
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* O footer deve ficar no final da página */
+.footer-bottom {
+    background: #cfb58e;
+    color: #000;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Adiciona margem automática no topo para empurrar o footer para o final */
+}
+
+main {
+    flex-grow: 1; /* Faz com que o main ocupe o espaço restante */
+    padding-bottom: 100px; /* Ajuste para evitar que o conteúdo passe por trás do footer */
+    overflow: auto; /* Garante que o conteúdo do main não ultrapasse os limites */
+}
+/* Header styles */
+header nav {
+    background-color: #cfb58e;
+    color: #000;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 30px;
+}
+
+header nav .logo a {
+    text-decoration: none;
+    color: #000;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+header nav .logo a span {
+    color: #fff;
+}
+
+header nav .menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+}
+
+header nav .menu li {
+    display: inline;
+    margin: 10px;
+}
+
+header nav .menu li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+header nav .menu li a:hover {
+    color: #fff;
+}
+
+/* Hamburger menu icon */
+header nav .menu-icon {
+    display: none;
+    font-size: 30px;
+    color: #fff;
+    cursor: pointer;
+}
+
+/* Search input and button */
+.pesquisa {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    width: 700px;
+}
+
+#inputPesquisa {
+    display: block;
+    width: 100%;
+    height: 50px;
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+}
+
+#btnPesquisa {
+    color: #000;
+    display: block;
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 15px;
+    margin-left: 10px;
+}
+
+#btnPesquisa:hover {
+    transform: scale(1.1);
+}
+
+/* Cadastro box styles */
+.cadastro {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fff;
+    transition: 0.5s ease;
+}
+
+.cadastro:hover {
+    transform: scale(1.1);
+}
+
+/* User icon */
+.fa-user {
+    border: 1px solid #000;
+    border-radius: 50%;
+    padding: 10px;
+}
+
+/* Banner styles */
+#banner {
+    background-color: #cfb58e;
+    height: 400px;
+}
+
+/* Negócios section */
+#negocios {
+    background-color: #e4d6c1;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 150px 0 150px;
+}
+
+.topo i {
+    color: #000000d0;
+}
+
+#negocios h1 {
+    font-size: 30px;
+    font-weight: 400;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Salao container */
+.saloes {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    padding: 0 100px 0 100px;
+}
+
+.saloes .linha {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.saloes h2 {
+    text-align: start;
+    display: block;
+}
+
+/* Individual Salao styling */
+.salao {
+    background-color: #ccc;
+    height: 150px;
+    width: 300px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.imagem {
+    background-color: #fff;
+    height: 100%;
+    padding: 30px;
+}
+
+.conteudo {
+    justify-content: space-between;
+    display: flex;
+    align-items: center;
+    background-color: #ccc;
+    height: 50%;
+    padding: 10px;
+}
+
+.conteudo button {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 5px;
+}
+
+/* Footer container */
+.footer-bottom {
+    background: #cfb58e;
+    color: #000;
+    font-size: 14px;
+    font-weight: 300;
+    padding: 40px 20px;
+    text-align: center;
+    width: 100%;
+    margin-top: auto; /* Adiciona margem automática no topo para empurrar o footer para o final */
+}
+
+/* Footer layout */
+.row-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-col {
+    width: 100%;
+    max-width: 300px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+}
+
+.footer-col h4 {
+    font-size: 18px;
+    color: #000;
+    text-transform: capitalize;
+    margin-bottom: 15px;
+    font-weight: 500;
+    position: relative;
+}
+
+.footer-col h4::before {
+    content: '';
+    position: absolute;
+    left: 40%;
+    bottom: -5px;
+    background-color: #4e4c4cd0;
+    height: 2px;
+    width: 50px;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+    font-size: 14px;
+    text-transform: capitalize;
+    color: #000;
+    text-decoration: none;
+    font-weight: 300;
+    display: block;
+    transition: color 0.3s ease, padding 0.3s ease;
+}
+
+.footer-col ul li a:hover {
+    color: #fff;
+    padding: 2px;
+}
+
+.footer-col .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.footer-col .social-links a {
+    height: 40px;
+    width: 40px;
+    background-color: rgb(255 255 255 / .2);
+    font-size: 1.3rem;
+    text-align: center;
+    line-height: 40px;
+    border-radius: 50%;
+    font-weight: 500;
+    color: #000;
+    transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+.footer-col .social-links a:hover {
+    background-color: #000;
+    color: #fff;
+}
+
+.copy {
+    background-color: #4829f9;
+    color: #fff;
+    padding: 10px;
+    font-size: 14px;
+    position: relative;
+    margin-top: 40px;
+}
+
+.copy p {
+    margin: 0;
+}
+
+/* Responsiveness */
+@media (max-width: 1170px) {
+    .salao {
+        width: 280px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 1130px) {
+    .salao {
+        width: 250px;
+        height: 100px;
+    }
+
+    #inputPesquisa {
+        width: 70%;
+    }
+
+    .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 1050px) {
+    .salao {
+        width: 210px;
+        height: 100px;
+    }
+}
+
+@media (max-width: 916px) {
+    .saloes .linha {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    .salao {
+        width: 500px;
+        height: 250px;
+    }
+
+    .logo {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    #inputPesquisa {
+        width: 60%;
+    }
+
+    main {
+        padding-bottom: 120px; /* Maior padding inferior para garantir que o conteúdo não passe por trás do footer */
+    }
+
+    .footer-bottom {
+        position: relative; /* Pode ajudar a garantir o posicionamento correto */
+    }
+}
+
+@media (max-width: 768px) {
+    header nav {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 20px;
+        position: relative;
+    }
+
+    .saloes .linha {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px;
+    }
+
+    .salao {
+        width: 50%;
+        margin: 10px;
+    }
+
+    .topo {
+        justify-content: space-between;
+        padding: 20px 50px 0 50px;
+    }
+
+    #inputPesquisa {
+        display: none;
+    }
+
+    #btnPesquisa {
+        display: none;
+    }
+
+    header nav .logo a {
+        font-size: 20px;
+    }
+
+    header nav .menu {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        margin: 0;
+        padding: 0;
+        background-color: #cfb58e;
+        text-align: center;
+    }
+
+    header nav .menu li {
+        display: inline-block;
+        margin: 40px 0 0 10px;
+        position: relative;
+        font-size: 10px;
+    }
+
+    header nav .menu li:not(:last-child)::after {
+        content: "•";
+        position: absolute;
+        right: -10px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+    }
+
+    header nav .menu.active {
+        display: block;
+    }
+
+    header nav .menu-icon {
+        display: block;
+        font-size: 30px;
+        color: #fff;
+        cursor: pointer;
+        position: absolute;
+        top: 20px;
+        right: 20px;
+    }
+
+    header nav .menu li a {
+        font-size: 15px;
+        font-weight: 600;
+        color: #fff;
+        padding: 25px 0;
+        text-decoration: none;
+    }
+
+    header nav .menu li a:hover {
+        background-color: #fff;
+    }
+
+    #negocios {
+        height: auto;
+    }
+
+    .fa-scissors {
+        font-size: 1.3rem;
+    }
+
+    main{
+        z-index: 1;
+        position: relative;
+        margin-bottom: auto;
+    }
+
+    footer {
+        position: static; /* Ou você pode usar 'static' dependendo da sua necessidade */
+        bottom: 0;
+        width: 100%;
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+    main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .footer-col {
+        max-width: 100%;
+        padding: 0;
+    }
+
+    .row-footer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .footer-col h4 {
+        margin-bottom: 15px;
+    }
+
+    .footer-col ul li a {
+        font-size: 14px;
+    }
+
+    .footer-col .social-links {
+        gap: 8px;
+    }
+
+    .footer-col .social-links a {
+        height: 35px;
+        width: 35px;
+        line-height: 35px;
+    }
+
+    .container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .footer-bottom {
+        margin-top: auto;
+    }
+}
+
+@media (max-width: 665px) {
+    .saloes {
+        flex-direction: row;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .salao {
+        width: 100%;
+        margin: 20px;
+    }
+}
+
+@media (max-width: 444px) {
+    .saloes {
+        flex-direction: row;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+
+    .salao {
+        width: 100%;
+        margin: 20px;
+    }
+}
