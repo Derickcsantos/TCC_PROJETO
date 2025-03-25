@@ -66,6 +66,66 @@ app.post('/clientes', async (req, res) => {
     }
 });
 
+app.post('/cadastro_salao', async (req, res) => {
+    const{
+        name,
+        email,
+        cpf,
+        'salon-name': salonName,
+        username,
+        phone,
+        address,
+        'salon-number': salonNumber,
+        complement,
+        'salon-phone': salonPhone,
+        region,
+    } = req.body
+
+    try{
+        // 1. Inserir dados na tabela usuario_dono
+        const {data: donoData, error: donoError} = await supabase
+            .from('usuario_dono')
+            .insert([
+                {
+                    nome_dono: name,
+                    email_dono: email,
+                    cpf: cpf,
+                    usuario: username,
+                    senha_dono: password_dono
+                },
+            ])
+            .select('id_dono');
+
+        if (donoError){
+            console.error('Erro ao inserir dados em usuario_don', donoError);
+            return res.status(500).json({error: donoError.message});
+        }
+
+        const idDono = donoData[0].id_dono;
+
+        // 2. Consultar a tabela localizacao
+
+        const {data: localizacaoData, error: localizacaoError} = await supabase
+            .from('localizacao')
+            .select('id_localizacao')
+            .eq('regiao', region);
+
+            if(localizacaoError){
+                console.error('Erro ao consultar dados em localizacao', localizacaoError);
+                return res.status(500).json({error: localizacaoError.message});
+            }
+
+            const idLocalizacao = localizacaoData[0].id_localizacao;
+
+            // 3. Inserir dados na tabela salão
+            const {error: salaoError} = await supabase.from('salao').insert([{
+                nome_salao: salonName,
+                telefone: phone,
+                endereco: address,
+            }])
+    }
+})
+
 
 
 app.listen(3000, () =>{
