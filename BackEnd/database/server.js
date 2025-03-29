@@ -79,10 +79,13 @@ app.post('/cadastro_salao', async (req, res) => {
         complement,
         'salon-phone': salonPhone,
         region,
+        password_dono,
     } = req.body
 
     try{
         // 1. Inserir dados na tabela usuario_dono
+        const senhaHash = await bcrypt.hash(password_dono, 10); 
+
         const {data: donoData, error: donoError} = await supabase
             .from('usuario_dono')
             .insert([
@@ -91,7 +94,7 @@ app.post('/cadastro_salao', async (req, res) => {
                     email_dono: email,
                     cpf: cpf,
                     usuario: username,
-                    senha_dono: password_dono
+                    senha_dono: senhaHash
                 },
             ])
             .select('id_dono');
@@ -122,9 +125,25 @@ app.post('/cadastro_salao', async (req, res) => {
                 nome_salao: salonName,
                 telefone: phone,
                 endereco: address,
-            }])
+                numero_salao: salonNumber,
+                complemento: complement,
+                'salon-phone': salonPhone,
+                dono: idDono,
+                localizacao: idLocalizacao
+            },
+        ]);
+
+        if (salonError){
+            console.error('Erro ao inserir dados em salao:', salaoError);
+            return res.status(500).json({error: salaoError.message});
+        }
+
+        res.status(201).json({message: 'Salão/Usúario cadastrado com sucesso'})
+    } catch (error){
+        console.error('Erro no servidor:', error);
+        res.status(500).json({error: error.message});
     }
-})
+});
 
 
 
