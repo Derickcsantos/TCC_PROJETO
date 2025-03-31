@@ -5,6 +5,7 @@
     list-style: none;
     font-family: 'poppins', sans-serif;
     box-sizing: border-box;
+    max-width: 100%;
 }
 
 /* Certifique-se de que o body e o container ocupem a altura total da janela */
@@ -14,6 +15,7 @@ html, body {
     padding: 0;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
 /* O container principal deve ocupar o espaço restante */
@@ -36,8 +38,7 @@ html, body {
 }
 
 main {
-    flex-grow: 1; /* Faz com que o main ocupe o espaço restante */
-    padding-bottom: 100px; /* Ajuste para evitar que o conteúdo passe por trás do footer */
+    flex-grow: 1; /* Faz com que o main ocupe o espaço restante */ /* Ajuste para evitar que o conteúdo passe por trás do footer */
     overflow: auto; /* Garante que o conteúdo do main não ultrapasse os limites */
 }
 /* Header styles */
@@ -156,6 +157,8 @@ header nav .menu-icon {
     height: auto;
     display: flex;
     flex-direction: column;
+    margin-bottom: 0;
+    padding-bottom: 0;
 }
 
 .topo {
@@ -217,7 +220,7 @@ header nav .menu-icon {
     display: flex;
     align-items: center;
     background-color: #ccc;
-    height: 50%;
+    height: 100%;
     padding: 10px;
 }
 
@@ -236,7 +239,7 @@ header nav .menu-icon {
     padding: 40px 20px;
     text-align: center;
     width: 100%;
-    margin-top: auto; /* Adiciona margem automática no topo para empurrar o footer para o final */
+    margin-top: 0;
 }
 
 /* Footer layout */
@@ -392,10 +395,6 @@ header nav .menu-icon {
 
     #inputPesquisa {
         width: 60%;
-    }
-
-    main {
-        padding-bottom: 120px; /* Maior padding inferior para garantir que o conteúdo não passe por trás do footer */
     }
 
     .footer-bottom {
