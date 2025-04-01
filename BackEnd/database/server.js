@@ -2,12 +2,12 @@ const express = require('express');
 const cors = require('cors'); // Permite que o front acesse o backend
 const supabase = require ('./supabase.js')
 const bcrypt = require('bcrypt');
-
+const path = require('path')
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static('FrontEnd'))
-
+app.use(express.static(path.join(__dirname, '..', '..', 'FrontEnd', 'Views', 'cadastro_saloes')));
+ 
 app.post('/loginC', async(req, res) => {
     const {email, senhaHash} = req.body;
 
@@ -70,7 +70,7 @@ app.post('/cadastro_salao', async (req, res) => {
     const{
         name,
         email,
-        cpf,
+        CPF,
         'salon-name': salonName,
         username,
         phone,
@@ -85,29 +85,29 @@ app.post('/cadastro_salao', async (req, res) => {
     try{
         // 1. Inserir dados na tabela usuario_dono
         const senhaHash = await bcrypt.hash(password_dono, 10); 
-
+        console.log('1');
         const {data: donoData, error: donoError} = await supabase
             .from('usuario_dono')
             .insert([
                 {
                     nome_dono: name,
                     email_dono: email,
-                    cpf: cpf,
+                    CPF: CPF,
                     usuario: username,
                     senha_dono: senhaHash
                 },
             ])
             .select('id_dono');
-
+            console.log('2');
         if (donoError){
             console.error('Erro ao inserir dados em usuario_don', donoError);
             return res.status(500).json({error: donoError.message});
         }
-
+        console.log('3');
         const idDono = donoData[0].id_dono;
 
         // 2. Consultar a tabela localizacao
-
+        console.log('4');
         const {data: localizacaoData, error: localizacaoError} = await supabase
             .from('localizacao')
             .select('id_localizacao')
@@ -117,7 +117,8 @@ app.post('/cadastro_salao', async (req, res) => {
                 console.error('Erro ao consultar dados em localizacao', localizacaoError);
                 return res.status(500).json({error: localizacaoError.message});
             }
-
+            console.log('5');
+            console.log(localizacaoData);
             const idLocalizacao = localizacaoData[0].id_localizacao;
 
             // 3. Inserir dados na tabela salão
@@ -132,7 +133,8 @@ app.post('/cadastro_salao', async (req, res) => {
                 localizacao: idLocalizacao
             },
         ]);
-
+        console.log('6');
+        console.log(salaoError);
         if (salonError){
             console.error('Erro ao inserir dados em salao:', salaoError);
             return res.status(500).json({error: salaoError.message});
