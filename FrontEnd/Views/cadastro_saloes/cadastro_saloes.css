@@ -10,7 +10,7 @@ body {
 }
 
 /* Container de cadastro */
-.cadastro-container {
+.container {
     background-color: #2c2c2c;
     border-radius: 10px;
     padding: 20px;
@@ -19,40 +19,51 @@ body {
     color: white;
 }
 
-.cadastro-container h2 {
+.container h2 {
     text-align: center;
     margin-bottom: 20px;
 }
 
 /* Estilo dos campos do formulário */
-.form-group {
+.input-group {
     margin-bottom: 15px;
 }
 
-.form-group label {
+.input-group label {
     display: block;
     font-size: 14px;
     margin-bottom: 5px;
 }
 
-.form-group input {
-    width: 100%; /* Garante que o input ocupe todo o espaço disponível dentro do card */
-    padding: 10px 10px 10px 40px; /* Ajuste para o espaço do ícone */
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}
+
+.input-group input, .input-group select {
+    width: 100%;
+    padding: 10px 10px 10px 40px;
     border-radius: 5px;
     border: 1px solid #444;
     background-color: #3a3a3a;
     color: #fff;
     outline: none;
-    box-sizing: border-box; /* Garante que padding seja considerado dentro do input */
+    box-sizing: border-box;
 }
 
-.form-group input::placeholder {
+.input-group input::placeholder, .input-group select {
     color: #aaa;
-    
 }
 
 /* Botão de cadastrar */
-.cadastrar-btn {
+.btn {
     width: 100%;
     background-color: #007bff;
     color: white;
@@ -63,22 +74,29 @@ body {
     font-size: 16px;
 }
 
-.cadastrar-btn:hover {
+.btn:hover {
     background-color: #0056b3;
 }
 
 /* Links de login e termos */
-.login-link, .termos {
+.footer-text, .terms-text {
     text-align: center;
     margin-top: 10px;
     font-size: 12px;
 }
 
-.login-link a, .termos a {
+.footer-text a, .terms-text a {
     color: #007bff;
     text-decoration: none;
 }
 
-.login-link a:hover, .termos a:hover {
+.footer-text a:hover, .terms-text a:hover {
     text-decoration: underline;
+}
+
+.divider {
+    border: none;
+    height: 1px;
+    background-color: #444;
+    margin: 20px 0;
 }
