@@ -1,0 +1,96 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.bg-white {
+    background-color: #0f172a; /* Alterado para azul bem escuro (quase preto) */
+    padding: 2rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    width: 100%;
+    max-width: 28rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+    color: #fff; /* Alterado para branco para melhor contraste no fundo escuro */
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+label {
+    display: block;
+    color: #f1f5f9; /* Alterado para um tom de cinza mais claro para contraste */
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+input, select {
+    width: calc(100% - 2rem);
+    padding: 0.75rem 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid #374151; /* Alterado para uma borda mais escura */
+    box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, 0.06);
+    font-size: 1rem;
+    line-height: 1.5rem;
+    background-color: #e5e7eb; /* Alterado para um cinza mais claro para melhor contraste com o texto */
+    color: #374151;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #60a5fa; /* Alterado para um tom de azul mais claro para o foco */
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.input-error {
+    border-color: #dc2626;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+button[type="submit"] {
+    background-color: #4338ca; /* Alterado para um tom de roxo mais escuro */
+    color: #fff;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    border-radius: 0.375rem;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #6d28d9; /* Alterado para um tom de roxo mais claro no hover */
+}
+
+button[type="submit"]:focus {
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.3);
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}

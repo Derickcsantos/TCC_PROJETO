@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Usuário Dono</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cadastro_usuario.css">
+</head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Cadastro de Usuário Dono</h1>
+        <form id="cadastroForm" action="/cadastro_usuario" method="POST" class="space-y-4">
+            <div>
+                <label for="nome_completo" class="block text-gray-700 text-sm font-bold mb-2">Nome Completo:</label>
+                <input type="text" id="nome_completo" name="nome_completo" required class="input-error">
+                <div id="nome_completo-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">E-mail:</label>
+                <input type="email" id="email" name="email" required class="input-error">
+                <div id="email-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="CPF" class="block text-gray-700 text-sm font-bold mb-2">CPF:</label>
+                <input type="text" id="CPF" name="CPF" required class="input-error">
+                <div id="CPF-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="telefone" class="block text-gray-700 text-sm font-bold mb-2">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" required class="input-error">
+                <div id="telefone-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="usuario" class="block text-gray-700 text-sm font-bold mb-2">Usuário:</label>
+                <input type="text" id="usuario" name="usuario" required class="input-error">
+                <div id="usuario-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="senha" class="block text-gray-700 text-sm font-bold mb-2">Senha:</label>
+                <input type="password" id="senha" name="senha" required class="input-error">
+                <div id="senha-error" class="error-message"></div>
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Cadastrar</button>
+        </form>
+        <div id="message" class="mt-4 text-center font-semibold"></div>
+    </div>
+    <script src="cadastro_usuario.js"></script>
+</body>
+</html>

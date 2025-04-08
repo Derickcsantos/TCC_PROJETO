@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Salão</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="cadastro_salao.css"> </head>
+<body class="bg-gray-100 flex justify-center items-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
+        <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Cadastro de Salão</h1>
+        <form id="cadastroSalaoForm" action="/cadastro_salao" method="POST" class="space-y-4">
+            <div>
+                <label for="nome_salao" class="block text-gray-700 text-sm font-bold mb-2">Nome do Salão:</label>
+                <input type="text" id="nome_salao" name="nome_salao" required class="input-error">
+                <div id="nome_salao-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="telefone" class="block text-gray-700 text-sm font-bold mb-2">Telefone:</label>
+                <input type="text" id="telefone" name="telefone" required class="input-error">
+                <div id="telefone-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="endereco" class="block text-gray-700 text-sm font-bold mb-2">Endereço:</label>
+                <input type="text" id="endereco" name="endereco" required class="input-error">
+                <div id="endereco-error" class="error-message"></div>
+            </div>
+             <div>
+                <label for="numero_salao" class="block text-gray-700 text-sm font-bold mb-2">Número do Salão:</label>
+                <input type="text" id="numero_salao" name="numero_salao" required class="input-error">
+                <div id="numero_salao-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="complemento_salao" class="block text-gray-700 text-sm font-bold mb-2">Complemento:</label>
+                <input type="text" id="complemento_salao" name="complemento_salao" class="input-error">
+                <div id="complemento_salao-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="imagem_url" class="block text-gray-700 text-sm font-bold mb-2">URL da Imagem:</label>
+                <input type="text" id="imagem_url" name="imagem_url" required class="input-error">
+                <div id="imagem_url-error" class="error-message"></div>
+            </div>
+            <div>
+                <label for="localizacao" class="block text-gray-700 text-sm font-bold mb-2">Localização:</label>
+                <select id="localizacao" name="localizacao" required class="input-error">
+                    <option value="" disabled selected>Selecione a Localização</option>
+                    <option value="NORTE">Norte</option>
+                    <option value="SUL">Sul</option>
+                    <option value="LESTE">Leste</option>
+                    <option value="OESTE">Oeste</option>
+                </select>
+                <div id="localizacao-error" class="error-message"></div>
+            </div>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">Cadastrar Salão</button>
+        </form>
+        <div id="message" class="mt-4 text-center font-semibold"></div>
+    </div>
+    <script src="cadastro_salao.js"></script>
+</body>
+</html>

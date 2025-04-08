@@ -1,0 +1,268 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #1f1f1f;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.bg-gray-100{
+    background-color: #1f1f1f;
+}
+
+.container {
+    width: 400px;
+    max-width: 400px;
+    background-color: #2a2a2a;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.form-container {
+    width: 100%;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 24px;
+    color: #E4E6EB;
+}
+
+.text-2xl{
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.font-semibold{
+    font-weight: 600;
+}
+
+.text-gray-800{
+    color: #E4E6EB;
+}
+
+.mb-6{
+    margin-bottom: 1.5rem;
+}
+
+.text-center{
+    text-align: center;
+}
+
+.space-y-4{
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.input-group {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 16px;
+    color: #B0B3BB;
+}
+
+.block{
+    display: block;
+}
+
+.text-gray-700{
+    color: #B0B3BB;
+}
+
+.text-sm{
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.font-bold{
+    font-weight: 700;
+}
+
+.mb-2{
+    margin-bottom: 0.5rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    margin-right: 10px;
+    color: #ccc;
+    font-size: 18px;
+}
+
+.input-wrapper input,
+.input-wrapper select {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #3a3a3a;
+    color: #fff;
+    font-size: 16px;
+}
+
+.input-error{
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #3a3a3a;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.input-wrapper input::placeholder,
+.input-wrapper select option {
+    color: #aaa;
+}
+
+.input-wrapper input:focus,
+.input-wrapper select:focus {
+    outline: none;
+    background-color: #4a4a4a;
+}
+
+.select-wrapper select {
+    background-color: #3A3B3C;
+    color: #EAE6EB;
+}
+
+.select-wrapper select:focus {
+    background-color: #4A4A4A;
+}
+
+.input-group select {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3A3B3C;
+    border: none;
+    border-radius: 4px;
+    color: #EAE6EB;
+    font-size: 1rem;
+}
+
+.input-group select::placeholder {
+    color: #B0B3BB;
+}
+
+.input-group select option {
+    color: #FFFFFF;
+}
+
+.btn {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #2D88FF;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.bg-blue-500{
+    background-color: #2D88FF;
+}
+
+.hover\:bg-blue-700:hover{
+    background-color: #1877F2;
+}
+
+.text-white{
+    color: #FFFFFF;
+}
+
+.py-2{
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.px-4{
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.rounded{
+    border-radius: 0.375rem;
+}
+
+.focus\:outline-none:focus{
+    outline: none;
+}
+
+.focus\:shadow-outline:focus{
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+.btn:hover {
+    background-color: #1877F2;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.footer-text,
+.terms-text {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #B0B3B8;
+}
+
+.footer-text a,
+.terms-text a {
+    color: #2D88FF;
+    text-decoration: none;
+}
+
+.footer-text a:hover,
+.terms-text a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #B0B3BB;
+    margin: 20px 0;
+    opacity: 0.5;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.75rem;
+    font-style: italic;
+    display: none;
+}
