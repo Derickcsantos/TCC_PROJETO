@@ -13,58 +13,35 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let hasErrors = false;
 
-        if (hasErrors){
-            return:
-        }
+        const campos = [
+            { nome: 'nome_completo', valor: nomeCompleto, mensagem: 'Nome Completo é obrigatório' },
+            { nome: 'email', valor: email, mensagem: 'Email é obrigatório' },
+            { nome: 'CPF', valor: CPF, mensagem: 'CPF é obrigatório' },
+            { nome: 'telefone', valor: telefone, mensagem: 'Telefone é obrigatório' },
+            { nome: 'usuario', valor: usuario, mensagem: 'Usuário é obrigatório' },
+            { nome: 'senha', valor: senha, mensagem: 'Senha é obrigatória' },
+        ];
 
-        if (!nomeCompleto.trim()) {
-            formErrorResponse('nome_completo-error', 'Nome Completo é obrigatório');
-            hasErrors = true;
-        } else {
-            document.getElementById('nome_completo-error').style.display = 'none';
-        }
-        if (!email.trim()) {
-            formErrorResponse('email-error', 'Email é obrigatório');
-            hasErrors = true;
-        } else if (!isValidEmail(email)) {
+        campos.forEach(campo => {
+            if (!campo.valor.trim()) {
+                formErrorResponse(`${campo.nome}-error`, campo.mensagem);
+                hasErrors = true;
+            } else {
+                document.getElementById(`${campo.nome}-error`).style.display = 'none';
+            }
+        });
+
+        if (email && !isValidEmail(email)) {
             formErrorResponse('email-error', 'Email inválido');
             hasErrors = true;
-        } else {
-            document.getElementById('email-error').style.display = 'none';
         }
-
-        if (!CPF.trim()) {
-            formErrorResponse('CPF-error', 'CPF é obrigatório');
-            hasErrors = true;
-        } else if (!isValidCPF(CPF)) {
+        if (CPF && !isValidCPF(CPF)) {
             formErrorResponse('CPF-error', 'CPF inválido');
             hasErrors = true;
-        } else {
-            document.getElementById('CPF-error').style.display = 'none';
         }
-
-        if (!telefone.trim()) {
-            formErrorResponse('telefone-error', 'Telefone é obrigatório');
-            hasErrors = true;
-        } else {
-            document.getElementById('telefone-error').style.display = 'none';
-        }
-
-        if (!usuario.trim()) {
-            formErrorResponse('usuario-error', 'Usuário é obrigatório');
-            hasErrors = true;
-        } else {
-            document.getElementById('usuario-error').style.display = 'none';
-        }
-
-        if (!senha.trim()) {
-            formErrorResponse('senha-error', 'Senha é obrigatória');
-            hasErrors = true;
-        } else if (senha.length < 6) {
+        if (senha && senha.length < 6) {
             formErrorResponse('senha-error', 'Senha deve ter no mínimo 6 caracteres');
             hasErrors = true;
-        } else {
-            document.getElementById('senha-error').style.display = 'none';
         }
 
         if (hasErrors) {
@@ -98,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(responseData => {
                 if (responseData.message === 'Usuário dono cadastrado com sucesso') {
                     alert('Cadastro realizado com sucesso!');
-                    window.location.href = `cadastro_salao.html?id_dono=${responseData.id_dono};`
+                    window.location.href = `cadastro_salao.html?id_dono=${responseData.id_dono}`;
                 } else {
                     alert(`Erro no cadastro: ${responseData.error}`);
                 }
@@ -109,9 +86,9 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     });
 
-    function formErrorResponse(inputId, response) {
+    function formErrorResponse(inputId, mensagem) {
         const errorElement = document.getElementById(inputId);
-        errorElement.textContent = response;
+        errorElement.textContent = mensagem;
         errorElement.style.display = 'block';
     }
 

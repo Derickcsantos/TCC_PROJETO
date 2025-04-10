@@ -1,21 +1,37 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const cadastroForm = document.getElementById('cadastroForm');
+    const cadastroSalaoForm  = document.getElementById('cadastroSalaoForm');
 
-    cadastroForm.addEventListener('submit', function (event) {
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+            results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    }
+
+    // Obtém o ID do dono da URL
+    const idDono = getUrlParameter('id_dono')
+
+    // Se não houver ID do dono, redirecione para a pagina de cadastro de usuário
+
+    if(!idDono){
+        alert('Você precisa cadastrar um usuário dono primeiro');
+        window.location.href = 'cadastro_usuario.html'
+        return // Interrompe a execução do resto do código
+    }
+
+    // Exibe o ID no console
+    console.log('ID do Dono recebido:', idDono);
+
+    cadastroSalaoForm.addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const CPF = document.getElementById('CPF').value;
-        const salonName = document.getElementById('salon-name').value;
-        const username = document.getElementById('username').value;
-        const phone = document.getElementById('phone').value;
-        const address = document.getElementById('address').value;
-        const salonNumber = document.getElementById('salon-number').value;
-        const complement = document.getElementById('complement').value;
-        const salonPhone = document.getElementById('salon-phone').value;
-        const region = document.getElementById('region').value;
-        const password_dono = document.getElementById('password_dono').value;
+        const nome_salao = document.getElementById('nome_salao').value;
+        const telefone = document.getElementById('telefone').value;
+        const endereco = document.getElementById('endereco').value;
+        const imagem_url = document.getElementById('imagem_url').value;
+        const localizacao = document.getElementById('localizacao').value;
+        const numero_salao = document.getElementById('numero_salao').value;
+        const complemento_salao = document.getElementById('complemento_salao').value;
 
         let hasErrors = false;
 
@@ -109,18 +125,14 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const data = {
-            name: name,
-            email: email,
-            CPF: CPF,
-            "salon-name": salonName,
-            username: username,
-            phone: phone,
-            address: address,
-            "salon-number": salonNumber,
-            complement: complement,
-            "salon-phone": salonPhone,
-            region: region,
-            password_dono: password_dono,
+           nome_salao: nome_salao,
+           telefone: telefone,
+           endereco: endereco,
+           imagem_url: imagem_url,
+           localizacao: localizacao,
+           numero_salao: numero_salao,
+           complemento_salao: complemento_salao,
+           id_dono: idDono, 
         };
 
         console.log('Dados a serem enviados:', data);
@@ -141,7 +153,8 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(responseData => {
                 if (responseData.message === 'Salão/Usuário cadastrado com sucesso') {
                     alert('Cadastro realizado com sucesso!');
-                    cadastroForm.reset();
+                    cadastroSalaoForm.reset();
+                    window.location.href = 'home.html'
                 } else {
                     alert(`Erro no cadastro: ${responseData.error}`);
                 }

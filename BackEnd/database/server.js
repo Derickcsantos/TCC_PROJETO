@@ -1,13 +1,17 @@
 const express = require('express');
+const app = express();
 const cors = require('cors'); // Permite que o front acesse o backend
 const supabase = require ('./supabase.js')
 const bcrypt = require('bcrypt');
 const path = require('path');
 const { error } = require('console');
-const app = express();
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', '..', 'FrontEnd', 'Views')));
+
+app.get('/teste', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 
 app.post("/cadastro_usuario", async (req,res) => {
     const{nome_completo, email, CPF, telefone, usuario, senha}= req.body;
