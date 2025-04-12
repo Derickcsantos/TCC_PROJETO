@@ -7,11 +7,23 @@ const path = require('path');
 const { error } = require('console');
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../../FrontEnd/Views')));
 
 app.get('/teste', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Rotas GET
+app.get('/', (req, res) => {
+    res.send('Servidor está rodando!');
+});
+
+// Rota para servir o HTML de cadastro (CORRIGIDA)
+app.get('/cadastro_usuario', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/cadastro_usuario/cadastro_usuario.html');
+    console.log('Tentando acessar:', filePath); // Debug
+    res.sendFile(filePath);
+});
 
 app.post("/cadastro_usuario", async (req,res) => {
     const{nome_completo, email, CPF, telefone, usuario, senha}= req.body;
@@ -55,44 +67,48 @@ app.post("/cadastro_usuario", async (req,res) => {
     }
 })
  
-app.post('/loginC', async(req, res) => {
-    const {email, senhaHash} = req.body;
+app.get('/loginC', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/login__cliente/login_cliente.html');
+    console.log('Tentando acessar:', filePath); // Debug
+    res.sendFile(filePath);
+})
+app.post('/loginC', async (req, res) => {
+    const { email, senha } = req.body; // Recebe 'senha' em vez de 'senhaHash'
 
-    console.log('Requisição de login recebidoa', {email, senhaHash})
-
-    try{
-        const {data: clientes, error} = await supabase
+    try {
+        // 1. Busca o usuário no banco
+        const { data: cliente, error } = await supabase
             .from('clientes')
             .select('senha_cliente')
             .eq('email_cliente', email)
+            .single(); // Garante que retorna apenas 1 registro
 
-        if (error){
-            console.error('Erro do supabase', error);
-            return res.status(500).json({error: error.message});
+        if (error) throw error;
+        if (!cliente) {
+            return res.status(401).json({ error: 'Email não cadastrado' });
         }
+
+        // 2. Compara a senha com bcrypt
+        const senhaValida = await bcrypt.compare(senha, cliente.senha_cliente);
         
-        if (clientes.length === 0){
-            console.log('Email ou senha incorretos');
-            return res.status(401).json({error: 'Email ou senha incorretos'});
+        if (!senhaValida) {
+            return res.status(401).json({ error: 'Senha incorreta' });
         }
 
-        const senhaHasBanco = clientes[0].senha_cliente // Criptogranfo a senha
+        // 3. Se tudo ok, retorna sucesso
+        res.json({ message: 'Login válido!' });
 
-        const senhaCorreta = await bcrypt.compare(senhaHash, senhaHasBanco);
-
-        if (!senhaCorreta){
-            console.log('Email ou senha incorretos');
-            return res.status(401).json({error: 'Email ou senha incorretos'});
-        }
-
-        console.log('Login realizado com sucesso')
-        res.json ({message: 'Login realizado'});
-    } catch (error){
-        console.error('Erro no servidor', error)
-        res.status(500).json({error: error.message});
+    } catch (error) {
+        console.error('Erro no login:', error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
 
+app.get('/clientes', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/cadastro_cliente/cadastro_cliente.html');
+    console.log('Tentando acessar:', filePath); // Debug
+    res.sendFile(filePath);
+});
 app.post('/clientes', async (req, res) => {
     const{nome_cliente, email_cliente, senha_cliente} = req.body;
 
@@ -113,6 +129,11 @@ app.post('/clientes', async (req, res) => {
     }
 });
 
+app.get('/cadastro_salao', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/cadastro_saloes/cadastro_salao.html');
+    console.log('Tentando acessar:', filePath); // Debug
+    res.sendFile(filePath);
+})
 app.post("/cadastro_salao", async (req, res) => {
     const{
         nome_salao,
