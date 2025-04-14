@@ -75,11 +75,15 @@ app.post('/loginC', async (req, res) => {
         // 1. Busca o usuário no banco
         const { data: cliente, error } = await supabase
             .from('clientes')
-            .select('senha_cliente')
+            .select('*')
             .eq('email_cliente', email)
             .single(); // Garante que retorna apenas 1 registro
 
-        if (error) throw error;
+        if (error) {
+            console.error("Erro no Supabase:", error);
+            return res.status(500).json({èrror: "Erro ao consultar o banco de dados"});
+        }
+
         if (!cliente) {
             return res.status(401).json({ error: 'Email não cadastrado' });
         }
@@ -92,7 +96,11 @@ app.post('/loginC', async (req, res) => {
         }
 
         // 3. Se tudo ok, retorna sucesso
-        res.json({ message: 'Login válido!' });
+        const {senha_cliente, ...dadosCliente} = cliente;
+        res.status(200).json({
+            message: 'Login válido',
+            cliente: dadosCliente
+        });
 
     } catch (error) {
         console.error('Erro no login:', error);
