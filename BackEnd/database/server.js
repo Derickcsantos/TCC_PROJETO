@@ -9,10 +9,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../../FrontEnd/Views')));
 
-app.get('/teste', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
-});
-
 // Rotas GET
 app.get('/', (req, res) => {
     res.send('Servidor está rodando!');
@@ -110,14 +106,26 @@ app.get('/clientes', (req, res) => {
     res.sendFile(filePath);
 });
 app.post('/clientes', async (req, res) => {
-    const{nome_cliente, email_cliente, senha_cliente} = req.body;
+    const{
+        nome_cliente,
+        email_cliente,
+        telefone_cliente,
+        região_cliente,
+        senha_cliente
+    } = req.body;
 
     try{
         const senhaHash = await bcrypt.hash(senha_cliente, 10); 
 
         const {data, error} = await supabase
         .from('clientes')
-        .insert([{nome_cliente, email_cliente, senha_cliente: senhaHash}]);
+        .insert([{
+            nome_cliente,
+            email_cliente,
+            telefone_cliente,
+            região_cliente,
+            senha_cliente: senhaHash
+        }]);
 
         if (error){
             return res.status(500).json({error: error.message});

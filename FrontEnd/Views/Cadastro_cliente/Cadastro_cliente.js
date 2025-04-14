@@ -15,6 +15,16 @@ document.getElementById("cadastroForm").addEventListener("submit", async functio
     const confirmPassword = document.getElementById("confirm-password").value;
     const region = document.getElementById("region").value
 
+    if(password.length < 4){
+        alert("A senha deve ter no mínimo 4 caracteres")
+        return;
+    }
+
+    if(!region){
+        alert("Selecione uma região")
+        return;
+    }
+
     if(password !== confirmPassword){
         alert("As senhas não coincidem");
         return;
