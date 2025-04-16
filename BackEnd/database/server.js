@@ -27,41 +27,55 @@ app.post("/cadastro_usuario", async (req,res) => {
     console.log("Requisição recebida para /cadastro_usuario", req.body);
 
     try {
+
+        // Verifica se o usuario já existe
+        const {data: usuarioExistente, error: erroConsulta} = await supabase
+
+        .from("usuario_dono")
+        .select("id_dono")
+        .or(`email_dono.eq.${email},CPF.eq.${CPF},usuario.eq.${usuario}`)
+        .maybeSingle();
+
+        if(erroConsulta) throw erroConsulta;
+        if(usuarioExistente){
+            return res.status(400).json({error: "Usuario, e-mail ou CPF já cadastrado"});
+        }
+
+        // Cria hash da senha
         const senhaHash = await bcrypt.hash(senha, 10);
-        const userData = {
+        
+        // Insere no banco
+        const {data, error} = await supabase
+        .from("usuario_dono")
+        .insert([{
             nome_dono: nome_completo,
             email_dono: email,
             CPF: CPF,
             telefone_dono: telefone,
-            senha_dono: senhaHash,
-        };
-
-        const {data, error} = await supabase
-        .from("usuario_dono")
-        .insert([userData])
+            usuario: usuario,
+            senha_dono: senhaHash
+        }])
         .select("id_dono");
 
-        console.log("Resultado da inserção em usuario_dono", {data, error});
-
         if(error){
-            console.log("Erro ao inserir dados em usuario_dono", error);
-            return res.status(500).json({error: error.message});
+            console.log("Erro Supabase", error);
+            return res.status(500).json({error: "Erro ao cadastrar", datails: error.message});
         }
 
-        // Verifica se o 'data' e 'data[0]' existe antes de acessar 'id_dono'
-        const idDono = data && data[0] &&[0].id_dono ? data[0].id_dono: null
+        res.status(201).json({
+            message: "Dono cadastrado com sucesso",
+            id_dono: data[0].id_dono
+        });
 
-        if(idDono){
-            res.status(201).json({message: "Usuário dono cadastrado com sucesso", id_dono: idDono})
-        } else{
-            console.error("Erro: não foi possivel obter o ID do dono após o cadastro");
-            return res.status(500).json({error: "Erro ao cadastrar usuario dono: ID Não encontrado"})
-        }
     } catch (error){
-        console.error("Erro no servidor em cadastro_usuario:", error);
-        res.status(500).json({error: error.message})
+        console.error("Erro no servidor", error);
+        res.status(500).json({
+            error: "Erro interno",
+            details: error.message
+        })
     }
-})
+        
+
  
 app.get('/loginC', (req, res) => {
     const filePath = path.join(__dirname, '../../FrontEnd/Views/login__cliente/login_cliente.html');
