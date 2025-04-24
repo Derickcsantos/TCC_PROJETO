@@ -266,3 +266,36 @@ h1 {
     font-style: italic;
     display: none;
 }
+
+<style>
+    .form-footer {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    
+    .btn-cadastrar {
+        background-color: #3b82f6;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-avancar {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-avancar:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+    }

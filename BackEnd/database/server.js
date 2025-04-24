@@ -74,7 +74,7 @@ app.post("/cadastro_usuario", async (req,res) => {
             details: error.message
         })
     }
-        
+})    
 
  
 app.get('/loginC', (req, res) => {
