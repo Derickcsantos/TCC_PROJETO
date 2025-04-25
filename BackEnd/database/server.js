@@ -20,7 +20,6 @@ app.get('/cadastro_usuario', (req, res) => {
     console.log('Tentando acessar:', filePath); // Debug
     res.sendFile(filePath);
 });
-
 app.post("/cadastro_usuario", async (req,res) => {
     const{nome_completo, email, CPF, telefone, usuario, senha}= req.body;
 
@@ -170,66 +169,58 @@ app.post("/cadastro_salao", async (req, res) => {
         telefone,
         endereco,
         imagem_url,
-        localizacao,
+        id_localizacao,
         numero_salao,
         complemento_salao,
+        id_dono
     } = req.body;
 
     console.log("Requisição recebida para /cadastro_salao com os seguintes dados:");
     console.log("req.body", req.body)
 
-    try{
-        const {data: localizacaoData, error: localizacaoError} = await supabase
-        .from("localizacao")
-        .select("id_localizacao")
-        .eq("regiao", localizacao)
-
-        console.log("4. Resultado da consulta em localizacao");
-        console.log("localizacaoData:", localizacaoData);
-        console.log("localizacaoError", localizacaoError);
-
-        if(localizacaoError){
-            console.log("Erro ao consultar dados em localizacao", localizacaoError);
-            return res.status(500).json({error: localizacaoError.message});
+    try {
+        // Verificação básica dos campos obrigatórios
+        if (!req.body.id_localizacao){
+            return res.status(400).json({
+                error: "id_localizacao é obrigatorio"
+            })
         }
 
-        if(!localizacaoData || localizacaoData.length === 0){
-            const errorMessage = "Região não encontrada no banco de dados";
-            console.error(errorMessage);
-            return res.status(400).json({error: errorMessage});
+        // Inserção no banco de dados
+        const { data, error } = await supabase
+            .from('saloes')
+            .insert([{
+                nome_salao: req.body.nome_salao,
+                telefone: req.body.telefone,
+                endereco: req.body.endereco,
+                numero_salao: req.body.numero_salao,
+                complemento_salao: req.body.complemento_salao,
+                imagem_url: req.body.imagem_url,
+                id_localizacao: req.body.id_localizacao,
+                id_dono: req.body.id_dono
+            }])
+            .select();
+
+        if (error) {
+            console.error('Erro no Supabase:', error);
+            throw error;
         }
 
-        const idLocalizacao = localizacaoData[0].id_localizacao;
+        // Resposta de sucesso
+        res.json({ 
+            success: true,
+            message: "Salão cadastrado com sucesso",
+            id_salao: data[0].id,
+            id_dono: data[0].id_dono
+        });
 
-        const salaoData = {
-            nome_salao: nome_salao,
-            telefone: telefone,
-            endereco: endereco,
-            numero_salao: numero_salao,
-            complemento_salao: complemento_salao,
-            imagem_url: imagem_url,
-            dono: idDono,
-            localizacao: idLocalizacao,
-        };
-        console.log("5. Dados para inserção em salão", salaoData);
-        const {error: salaoError} = await supabase.from("salao").insert([salaoData]);
-
-        console.log("6. Resultado da inserção em salão:");
-        console.log("salaoError:", salaoError);
-
-        if(salonError){
-            console.log("Erro ao inserir dados em salão", salaoError);
-            return res.status(500).json({error: salaoError.message});
-        }
-
-        res.status(201).json({message: "Salão cadastrado com sucesso"});
-    } catch (error){
-        console.error("Erro no servidor:", error);
-        res.status(500).json({error: error.message})
+    } catch (error) {
+        console.error('Erro no servidor:', error);
+        res.status(500).json({ 
+            error: error.message || "Erro ao cadastrar salão" 
+        });
     }
-
-})
-
+});
 
 app.listen(3000, () =>{
     console.log('Servidor rodando na porta 3000')
