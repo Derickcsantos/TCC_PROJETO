@@ -7,6 +7,7 @@ const path = require('path');
 const { error } = require('console');
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd/Views')));
 
 // Rotas GET
@@ -81,7 +82,7 @@ app.get('/loginC', (req, res) => {
     console.log('Tentando acessar:', filePath); // Debug
     res.sendFile(filePath);
 })
-app.post('/loginC', async (req, res) => {
+app.post('/loginC', async (req, res) => {qq
     const { email, senha } = req.body; // Recebe 'senha' em vez de 'senhaHash'
 
     try {
@@ -164,61 +165,50 @@ app.get('/cadastro_salao', (req, res) => {
     res.sendFile(filePath);
 })
 app.post("/cadastro_salao", async (req, res) => {
-    const{
-        nome_salao,
-        telefone,
-        endereco,
-        imagem_url,
-        id_localizacao,
-        numero_salao,
-        complemento_salao,
-        id_dono
-    } = req.body;
+    console.log("Dados recebidos no backend:", req.body);
 
-    console.log("Requisição recebida para /cadastro_salao com os seguintes dados:");
-    console.log("req.body", req.body)
+    if (typeof req.body.localizacao === 'undefined' || req.body.localizacao === null) {
+        return res.status(400).json({ error: "Localização é obrigatória" });
+    }
 
     try {
-        // Verificação básica dos campos obrigatórios
-        if (!req.body.id_localizacao){
-            return res.status(400).json({
-                error: "id_localizacao é obrigatorio"
-            })
+        console.log("Buscando id_localizacao para a região:", req.body.localizacao); // ADICIONE ESTE LOG
+
+        const { data: localizacaoData, error: localizacaoError } = await supabase
+            .from('localizacao')
+            .select('id_localizacao')
+            .eq('regiao', req.body.localizacao)
+            .single();
+
+        console.log("Resultado da busca de localizacaoData:", localizacaoData); // ADICIONE ESTE LOG
+        console.log("Erro na busca de localizacaoError:", localizacaoError); // ADICIONE ESTE LOG
+
+        if (localizacaoError || !localizacaoData) {
+            return res.status(400).json({ error: "Localização inválida" });
         }
 
-        // Inserção no banco de dados
-        const { data, error } = await supabase
-            .from('saloes')
+        const idLocalizacao = localizacaoData.id_localizacao;
+
+        const { data: salaoData, error: salaoError } = await supabase
+            .from('salao')
             .insert([{
                 nome_salao: req.body.nome_salao,
                 telefone: req.body.telefone,
                 endereco: req.body.endereco,
                 numero_salao: req.body.numero_salao,
                 complemento_salao: req.body.complemento_salao,
-                imagem_url: req.body.imagem_url,
-                id_localizacao: req.body.id_localizacao,
-                id_dono: req.body.id_dono
+                localizacao: idLocalizacao,
+                dono: Number(req.body.id_dono)
             }])
             .select();
 
-        if (error) {
-            console.error('Erro no Supabase:', error);
-            throw error;
-        }
+        if (salaoError) throw salaoError;
 
-        // Resposta de sucesso
-        res.json({ 
-            success: true,
-            message: "Salão cadastrado com sucesso",
-            id_salao: data[0].id,
-            id_dono: data[0].id_dono
-        });
+        res.json({ success: true, id_salao: salaoData[0].id });
 
     } catch (error) {
-        console.error('Erro no servidor:', error);
-        res.status(500).json({ 
-            error: error.message || "Erro ao cadastrar salão" 
-        });
+        console.error('Erro ao cadastrar salão:', error);
+        res.status(500).json({ error: "Erro ao cadastrar salão", details: error.message });
     }
 });
 
