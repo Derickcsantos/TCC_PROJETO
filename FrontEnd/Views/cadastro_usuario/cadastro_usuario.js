@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(response => response.json())
         .then(data => {
-            if (data.id_dono) {
+            if (data && data.id_dono) {
                 // Mostra o botão avançar após cadastro
                 btnAvancar.style.display = 'block';
+                alert('Cadastro realizado! Redirecionando');
                 // Atualiza o link com o ID
-                btnAvancar.href = `/cadastro_salao`;
-                alert('Cadastro realizado! Clique em Avançar para continuar.');
+                window.location.href = `/cadastro_salao?id_dono=${data.id_dono}`;
             } else {
                 throw new Error(data.error || 'Erro no cadastro');
             }
