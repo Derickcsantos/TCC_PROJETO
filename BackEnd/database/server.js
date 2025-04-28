@@ -30,11 +30,10 @@ app.post("/cadastro_usuario", async (req,res) => {
 
         // Verifica se o usuario já existe
         const {data: usuarioExistente, error: erroConsulta} = await supabase
-
-        .from("usuario_dono")
-        .select("id_dono")
-        .or(`email_dono.eq.${email},CPF.eq.${CPF},usuario.eq.${usuario}`)
-        .maybeSingle();
+            .from("usuario_dono")
+            .select("id_dono")
+            .or(`email_dono.eq.${email},CPF.eq.${CPF},usuario.eq.${usuario}`)
+            .maybeSingle();
 
         if(erroConsulta) throw erroConsulta;
         if(usuarioExistente){
@@ -43,19 +42,19 @@ app.post("/cadastro_usuario", async (req,res) => {
 
         // Cria hash da senha
         const senhaHash = await bcrypt.hash(senha, 10);
-        
+
         // Insere no banco
         const {data, error} = await supabase
-        .from("usuario_dono")
-        .insert([{
-            nome_dono: nome_completo,
-            email_dono: email,
-            CPF: CPF,
-            telefone_dono: telefone,
-            usuario: usuario,
-            senha_dono: senhaHash
-        }])
-        .select("id_dono");
+            .from("usuario_dono")
+            .insert([{
+                nome_dono: nome_completo,
+                email_dono: email,
+                CPF: CPF,
+                telefone_dono: telefone,
+                usuario: usuario,
+                senha_dono: senhaHash
+            }])
+            .select("id_dono");
 
         if(error){
             console.log("Erro Supabase", error);
@@ -74,9 +73,8 @@ app.post("/cadastro_usuario", async (req,res) => {
             details: error.message
         })
     }
-})    
+})
 
- 
 app.get('/loginC', (req, res) => {
     const filePath = path.join(__dirname, '../../FrontEnd/Views/login__cliente/login_cliente.html');
     console.log('Tentando acessar:', filePath); // Debug
@@ -104,7 +102,7 @@ app.post('/loginC', async (req, res) => {qq
 
         // 2. Compara a senha com bcrypt
         const senhaValida = await bcrypt.compare(senha, cliente.senha_cliente);
-        
+
         if (!senhaValida) {
             return res.status(401).json({ error: 'Senha incorreta' });
         }
@@ -137,17 +135,17 @@ app.post('/clientes', async (req, res) => {
     } = req.body;
 
     try{
-        const senhaHash = await bcrypt.hash(senha_cliente, 10); 
+        const senhaHash = await bcrypt.hash(senha_cliente, 10);
 
         const {data, error} = await supabase
-        .from('clientes')
-        .insert([{
-            nome_cliente,
-            email_cliente,
-            telefone_cliente,
-            região_cliente,
-            senha_cliente: senhaHash
-        }]);
+            .from('clientes')
+            .insert([{
+                nome_cliente,
+                email_cliente,
+                telefone_cliente,
+                região_cliente,
+                senha_cliente: senhaHash
+            }]);
 
         if (error){
             return res.status(500).json({error: error.message});
@@ -197,7 +195,11 @@ app.post("/cadastro_salao", async (req, res) => {
                 endereco: req.body.endereco,
                 numero_salao: req.body.numero_salao,
                 complemento_salao: req.body.complemento_salao,
+<<<<<<< HEAD
                 localizacao: idLocalizacao, // <---- CORREÇÃO AQUI: Use idLocalizacao
+=======
+                localizacao: idLocalizacao, // Use o ID da localização aqui
+>>>>>>> c09f9472510ec7864c7aafb7c2e6b4537643dd4e
                 dono: Number(req.body.id_dono)
             }])
             .select();
