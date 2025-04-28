@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro de Salão</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/cadastro_saloes/cadastro_salao.css"> </head>
+    <link rel="stylesheet" href="/Views/cadastro_saloes/cadastro_salao.css"> </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen">
     <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
         <h1 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Cadastro de Salão</h1>
@@ -36,11 +36,6 @@
                 <div id="complemento_salao-error" class="error-message"></div>
             </div>
             <div>
-                <label for="imagem_url" class="block text-gray-700 text-sm font-bold mb-2">URL da Imagem:</label>
-                <input type="text" id="imagem_url" name="imagem_url" required class="input-error">
-                <div id="imagem_url-error" class="error-message"></div>
-            </div>
-            <div>
                 <label for="localizacao" class="block text-gray-700 text-sm font-bold mb-2">Localização:</label>
                 <select id="localizacao" name="localizacao" required class="input-error">
                     <option value="" disabled selected>Selecione a Localização</option>
@@ -55,6 +50,6 @@
         </form>
         <div id="message" class="mt-4 text-center font-semibold"></div>
     </div>
-    <script src="cadastro_salao.js"></script>
+    <script src="/Views/cadastro_saloes/cadastro_salao.js"></script>
 </body>
 </html>
