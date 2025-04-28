@@ -195,11 +195,7 @@ app.post("/cadastro_salao", async (req, res) => {
                 endereco: req.body.endereco,
                 numero_salao: req.body.numero_salao,
                 complemento_salao: req.body.complemento_salao,
-<<<<<<< HEAD
                 localizacao: idLocalizacao, // <---- CORREÇÃO AQUI: Use idLocalizacao
-=======
-                localizacao: idLocalizacao, // Use o ID da localização aqui
->>>>>>> c09f9472510ec7864c7aafb7c2e6b4537643dd4e
                 dono: Number(req.body.id_dono)
             }])
             .select();
