@@ -5,10 +5,13 @@ const supabase = require ('./supabase.js')
 const bcrypt = require('bcrypt');
 const path = require('path');
 const { error } = require('console');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd')));
+app.use(cookieParser())/
 
 // Rotas GET
 app.get('/', (req, res) => {
@@ -209,6 +212,108 @@ app.post("/cadastro_salao", async (req, res) => {
         res.status(500).json({ error: "Erro ao cadastrar salão", details: error.message });
     }
 });
+
+app.get('/login_usuario', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/login_usuario/login_usuario.html');
+    console.log('Tentando acessar', filePath);
+    res.sendFile(filePath);
+});
+
+// Configure uma chave secreta para JWT (em produção, use variável de ambiente)
+const JWT_SECRET = 'sua_chave_secreta_super_forte_123!';
+
+// Rota POST para autenticação do usuário dono (atualizada)
+app.post('/login_usuario', async (req, res) => {
+    const { email, senha } = req.body;
+
+    try {
+        // 1. Busca o usuário dono no banco
+        const { data: usuario, error } = await supabase
+            .from('usuario_dono')
+            .select('*')
+            .eq('email_dono', email)
+            .single();
+
+        if (error) {
+            console.error("Erro no Supabase:", error);
+            return res.status(500).json({ error: "Erro ao consultar o banco de dados" });
+        }
+
+        if (!usuario) {
+            return res.status(401).json({ error: 'Email não cadastrado' });
+        }
+
+        // 2. Compara a senha com bcrypt
+        const senhaValida = await bcrypt.compare(senha, usuario.senha_dono);
+
+        if (!senhaValida) {
+            return res.status(401).json({ error: 'Senha incorreta' });
+        }
+
+        // 3. Cria o token JWT
+        const token = jwt.sign(
+            {
+                id_dono: usuario.id_dono,
+                email: usuario.email_dono,
+                nome: usuario.nome_dono
+            },
+            JWT_SECRET,
+            { expiresIn: '1h' } // Token expira em 1 hora
+        );
+
+        // 4. Remove a senha do objeto de resposta
+        const { senha_dono, ...dadosUsuario } = usuario;
+
+        // 5. Configura o cookie HTTP-only (mais seguro)
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production', // HTTPS em produção
+            maxAge: 3600000, // 1 hora em milissegundos
+            sameSite: 'strict'
+        });
+
+        // 6. Retorna sucesso com os dados do usuário
+        res.status(200).json({
+            message: 'Login realizado com sucesso',
+            usuario: dadosUsuario
+        });
+
+    } catch (error) {
+        console.error('Erro no login:', error);
+        res.status(500).json({ error: 'Erro interno no servidor' });
+    }
+});
+
+// Middleware para verificar autenticação
+function autenticarUsuario(req, res, next) {
+    const token = req.cookies.token;
+    
+    if (!token) {
+        return res.status(401).json({ error: 'Não autorizado' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.usuario = decoded;
+        next();
+    } catch (err) {
+        res.status(401).json({ error: 'Token inválido' });
+    }
+}
+
+// Rota protegida de exemplo
+app.get('/perfil_usuario', autenticarUsuario, (req, res) => {
+    res.json({ 
+        message: 'Acesso autorizado',
+        usuario: req.usuario
+    });
+});
+
+// Rota de logout
+app.post('/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Logout realizado com sucesso' });
+})
 
 app.listen(3000, () =>{
     console.log('Servidor rodando na porta 3000')
