@@ -10,6 +10,38 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd')));
 
+
+// Rota para servir o formulário de cadastro de administrador
+app.get('/cadastro_adm', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/cadastro_adm/cadastro_adm.html');
+    res.sendFile(filePath);
+});
+
+// Rota para lidar com o envio do formulário de cadastro de administrador
+app.post('/cadastro_adm', async (req, res) => {
+    const { email_adm, senha_adm } = req.body;
+
+    try {
+        // Criptografa a senha usando bcrypt
+        const senhaHash = await bcrypt.hash(senha_adm, 10);
+
+        // Insere o novo administrador no banco de dados
+        const { data, error } = await supabase
+            .from('adm')
+            .insert([{ email_adm, senha_adm: senhaHash }]);
+
+        if (error) {
+            console.error('Erro ao cadastrar administrador:', error);
+            return res.status(500).json({ error: 'Erro ao cadastrar administrador no banco de dados.' });
+        }
+
+        res.status(201).json({ message: 'Administrador cadastrado com sucesso!' });
+
+    } catch (error) {
+        console.error('Erro durante o cadastro de administrador:', error);
+        res.status(500).json({ error: 'Erro interno ao processar o cadastro.' });
+    }
+});
 // Rotas GET
 app.get('/', (req, res) => {
     res.send('Servidor está rodando!');
@@ -80,39 +112,79 @@ app.get('/loginC', (req, res) => {
     console.log('Tentando acessar:', filePath); // Debug
     res.sendFile(filePath);
 })
-app.post('/loginC', async (req, res) => {qq
-    const { email, senha } = req.body; // Recebe 'senha' em vez de 'senhaHash'
+
+app.post('/loginC', async (req, res) => {
+    const { email, senha } = req.body;
+
+    console.log("Email recebido no login:", email);
+    console.log("Senha recebida no login:", senha);
 
     try {
-        // 1. Busca o usuário no banco
-        const { data: cliente, error } = await supabase
+        // 1. Tenta buscar o usuário na tabela 'adm'
+        const { data: administrador, error: errorAdm } = await supabase
+            .from('adm')
+            .select('*')
+            .eq('email_adm', email)
+            .single();
+
+        console.log("Dados do administrador encontrado:", administrador);
+
+        if (errorAdm) {
+            console.error("Erro ao consultar tabela adm:", errorAdm);
+            // Não retorna erro aqui para tentar buscar como cliente
+        }
+
+        // Verifica se um administrador foi encontrado E se a senha_adm existe
+        if (administrador && administrador.senha_adm) {
+            console.log("Senha hash do administrador no banco:", administrador.senha_adm);
+            try {
+                const senhaValidaAdm = await bcrypt.compare(senha, administrador.senha_adm);
+                if (senhaValidaAdm) {
+                    console.log("Senha do administrador VÁLIDA - Redirecionando!"); // ADICIONE ESTE LOG
+                    return res.redirect('Views/adm/adm.html');
+                } else {
+                    console.log("Senha do administrador inválida.");
+                }
+            } catch (bcryptError) {
+                console.error("Erro ao comparar senha do administrador:", bcryptError);
+            }
+        } else {
+            console.log("Administrador não encontrado ou senha hash ausente.");
+        }
+
+        // Se não encontrou como administrador ou a senha estava errada, busca na tabela 'clientes'
+        const { data: cliente, error: errorCliente } = await supabase
             .from('clientes')
             .select('*')
             .eq('email_cliente', email)
-            .single(); // Garante que retorna apenas 1 registro
+            .single();
 
-        if (error) {
-            console.error("Erro no Supabase:", error);
-            return res.status(500).json({èrror: "Erro ao consultar o banco de dados"});
+        console.log("Dados do cliente encontrado:", cliente);
+
+        if (errorCliente) {
+            console.error("Erro ao consultar tabela clientes:", errorCliente);
+            return res.status(500).json({ error: "Erro ao consultar o banco de dados" });
         }
 
         if (!cliente) {
             return res.status(401).json({ error: 'Email não cadastrado' });
         }
 
-        // 2. Compara a senha com bcrypt
-        const senhaValida = await bcrypt.compare(senha, cliente.senha_cliente);
+        try {
+            const senhaValidaCliente = await bcrypt.compare(senha, cliente.senha_cliente);
+            if (!senhaValidaCliente) {
+                return res.status(401).json({ error: 'Senha incorreta' });
+            }
 
-        if (!senhaValida) {
-            return res.status(401).json({ error: 'Senha incorreta' });
+            const { senha_cliente, ...dadosCliente } = cliente;
+            res.status(200).json({
+                message: 'Login de cliente válido',
+                cliente: dadosCliente
+            });
+        } catch (bcryptError) {
+            console.error("Erro ao comparar senha do cliente:", bcryptError);
+            return res.status(500).json({ error: 'Erro interno ao verificar senha' });
         }
-
-        // 3. Se tudo ok, retorna sucesso
-        const {senha_cliente, ...dadosCliente} = cliente;
-        res.status(200).json({
-            message: 'Login válido',
-            cliente: dadosCliente
-        });
 
     } catch (error) {
         console.error('Erro no login:', error);
@@ -120,9 +192,9 @@ app.post('/loginC', async (req, res) => {qq
     }
 });
 
-app.get('/clientes', (req, res) => {
-    const filePath = path.join(__dirname, '../../FrontEnd/Views/cadastro_cliente/cadastro_cliente.html');
-    console.log('Tentando acessar:', filePath); // Debug
+// Rota para servir o arquivo adm.html
+app.get('/adm.html', (req, res) => {
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/adm/adm.html');
     res.sendFile(filePath);
 });
 app.post('/clientes', async (req, res) => {
