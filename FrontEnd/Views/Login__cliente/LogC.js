@@ -10,22 +10,19 @@ document.querySelector('.btn').addEventListener('click', async(event) => {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({email: email, senhaHash: password}),
+            body: JSON.stringify({email: email, senha: password}),
+            redirect: 'follow' // Explicitamente instrui o fetch a seguir redirecionamentos
         });
 
-        const data = await response.json();
-
-        if (response.ok){
-            // Login bem sucedido
-            alert('Login realizado com sucesso')
-            // Redirecione para outra página, se necessário
-            // window.location.href = '/pagina-principal';
+        if (response.ok) {
+            console.log('Login bem-sucedido - Redirecionando no frontend...');
+            window.location.href = '/adm.html'; // Força o redirecionamento no frontend
         } else {
-            // Erro no login
-            alert(`Erro no login: ${data.error}`)
+            const data = await response.json();
+            alert(`Erro no login: ${data.error}`);
         }
     } catch (error){{
         console.error('Erro:', error);
-        alert('Ocorreu um erro ao tentar fazer login')
+        alert('Ocorreu um erro ao tentar fazer login');
     }}
-})
+});
