@@ -72,7 +72,7 @@
             <div class="content-section" id="clientes-content" style="display: none;">
                 <div class="section-header">
                     <h2>Gerenciamento de Clientes</h2>
-                    <button class="btn btn-primary" id="add-cliente-btn">
+                    <button class="btn btn-primary" id="add-cliente-btn" data-bs-toggle="modal" data-bs-target="clienteModal">
                         <i class="fas fa-plus"></i> Adicionar Cliente
                     </button>
                 </div>
@@ -116,6 +116,15 @@
                                 <div class="mb-3">
                                     <label for="telefone" class="form-label">Telefone</label>
                                     <input type="text" class="form-control" id="telefone">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="regiao" class="form-label">Região</label>
+                                    <input type="text" class="form-control" id="regiao">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="telefone" class="form-label">Senha</label>
+                                    <input type="password" class="form-control" id="senha">
+                                    <small class="text-muted">Deixe em branco para não alterar.</small>
                                 </div>
                             </form>
                         </div>
