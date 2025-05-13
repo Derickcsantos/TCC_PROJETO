@@ -344,6 +344,122 @@ app.post("/cadastro_salao", async (req, res) => {
     }
 });
 
+// Rota para obter todos os clientes
+app.get('/api/clientes', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('clientes')
+            .select('*');
+
+        if (error) {
+            console.error("Erro ao obter clientes:", error);
+            return res.status(500).json({ error: 'Erro ao obter clientes' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error("Erro no servidor ao obter clientes:", error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// Rota para obter um cliente por ID
+app.get('/api/clientes/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const { data, error } = await supabase
+            .from('clientes')
+            .select('*')
+            .eq('id_cliente', id)
+            .single();
+
+        if (error) {
+            console.error("Erro ao obter cliente por ID:", error);
+             if (error.message === "No rows found") {
+                return res.status(404).json({ error: 'Cliente não encontrado' });
+            }
+            return res.status(500).json({ error: 'Erro ao obter cliente' });
+        }
+
+        if (!data) {
+            return res.status(404).json({ error: 'Cliente não encontrado' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error("Erro no servidor ao obter cliente por ID:", error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+
+// Rota para atualizar um cliente por ID
+app.put('/api/clientes/:id', async (req, res) => {
+    const id = req.params.id;
+    const {
+        nome_cliente,
+        email_cliente,
+        telefone_cliente,
+        região_cliente,
+        senha_cliente
+    } = req.body;
+
+    try {
+        let updateData = {
+            nome_cliente,
+            email_cliente,
+            telefone_cliente,
+            região_cliente,
+        };
+
+        if (senha_cliente) {
+            const senhaHash = await bcrypt.hash(senha_cliente, 10);
+            updateData.senha_cliente = senhaHash;
+        }
+        const { data, error } = await supabase
+            .from('clientes')
+            .update(updateData)
+            .eq('id_cliente', id);
+
+        if (error) {
+            console.error("Erro ao atualizar cliente:", error);
+            return res.status(500).json({ error: 'Erro ao atualizar cliente' });
+        }
+        if (data.length === 0) {
+             return res.status(404).json({ error: 'Cliente não encontrado' });
+        }
+
+        res.json({ message: 'Cliente atualizado com sucesso' });
+    } catch (error) {
+        console.error("Erro no servidor ao atualizar cliente:", error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+// Rota para deletar um cliente por ID
+app.delete('/api/clientes/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const { data, error } = await supabase
+            .from('clientes')
+            .delete()
+            .eq('id_cliente', id);
+
+        if (error) {
+            console.error("Erro ao deletar cliente:", error);
+            return res.status(500).json({ error: 'Erro ao deletar cliente' });
+        }
+        if (data.length === 0) {
+             return res.status(404).json({ error: 'Cliente não encontrado' });
+        }
+
+        res.json({ message: 'Cliente deletado com sucesso' });
+    } catch (error) {
+        console.error("Erro no servidor ao deletar cliente:", error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
 app.listen(3000, () =>{
     console.log('Servidor rodando na porta 3000')
 })
