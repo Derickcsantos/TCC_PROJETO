@@ -10,6 +10,63 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd')));
 
+// Rota para obter a contagem de clientes
+app.get('/api/clientes/count', async (req, res) => {
+    try {
+        const { count, error} = await supabase
+        .from('clientes')
+        .select('*', {count: 'exact'});
+
+        if(error){
+            console.error('Erro ao obter contagem de clientes:', error);
+            return res.status(500).json({error: 'Erro ao bter a contagem de clientes'});
+        }
+
+        res.json({count});
+    } catch (error){
+        console.error('Erro no servidor ao obter a contagem de clientes', error);
+        res.status(500).json({error: 'Erro interno do servidor'})
+    }
+});
+
+// Rota para obter a contagem de salões
+app.get('/api/saloes/count', async (req, res) =>{
+    try{
+        const {count, error} = await supabase
+        .from('salao')
+        .select('*', {count: 'exact'})
+
+        if(error){
+            console.error('Erro ao obter a contagem de salões:', error);
+            return res.status(500).json({error: 'Erro ao obter contagem de salões'});
+        }
+
+        res.json({count});
+    } catch(error){
+        console.error('Erro no servidor ao obter contagem de salões:', error);
+        res.status(500).json({error: 'Erro interno do servidor'})
+    }
+});
+
+// Rota para obter a contagem de usuários
+app.get('/api/usuarios/count', async (req, res) => {
+    try {
+        const { count, error } = await supabase
+            .from('usuario_dono')
+            .select('*', { count: 'exact' });
+
+        if (error) {
+            console.error('Erro ao obter contagem de usuários donos:', error);
+            return res.status(500).json({ error: 'Erro ao obter contagem de usuários donos' });
+        }
+
+        res.json({ count });
+    } catch (error) {
+        console.error('Erro no servidor ao obter contagem de usuários donos:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
 
 // Rota para servir o formulário de cadastro de administrador
 app.get('/cadastro_adm', (req, res) => {
@@ -197,6 +254,11 @@ app.get('/adm.html', (req, res) => {
     const filePath = path.join(__dirname, '../../FrontEnd/Views/adm/adm.html');
     res.sendFile(filePath);
 });
+
+app.get('/clientes', async (req, res) => {
+    const filePath = path.join(__dirname, '../../Frontend/Views/Cadastro_cliente/Cadastro_cliente.html')
+    res.sendFile(filePath)
+})
 app.post('/clientes', async (req, res) => {
     const{
         nome_cliente,
