@@ -1,10 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const dashboardContent = document.getElementById('dashboard-content');
     const clientesContent = document.getElementById('clientes-content');
-    const clientesLink = document.querySelector('.sidebar-menu a[href="#clientes"]').parentElement; // Seleciona o <li> pai
+    const clientesLink = document.querySelector('.sidebar-menu a[href="#clientes"]').parentElement;
     const clientesTableBody = document.getElementById('clientes-table-body');
     const addClienteBtn = document.getElementById('add-cliente-btn');
-    const clienteModal = new bootstrap.Modal(document.getElementById('clienteModal'));
+    const clienteModalEl = document.getElementById('clienteModal'); // Renomeei para evitar sombra
     const modalTitle = document.getElementById('modalTitle');
     const clienteForm = document.getElementById('clienteForm');
     const clienteIdInput = document.getElementById('clienteId');
@@ -14,25 +14,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const saloesCountSpan = document.getElementById('saloes-count');
     const usuariosCountSpan = document.getElementById('usuarios-count');
 
+    let clienteModal; // Declarei fora para poder usar no escopo correto
+
     async function fetchCounts() {
-    try {
-        const clientesResponse = await fetch('/api/clientes/count'); // Linha 19 (aproximadamente)
-        const clientesData = await clientesResponse.json();
-        clientesCountSpan.textContent = clientesData.count;
+        try {
+            const clientesResponse = await fetch('/api/clientes/count');
+            const clientesData = await clientesResponse.json();
+            clientesCountSpan.textContent = clientesData.count;
 
-        const saloesResponse = await fetch('/api/saloes/count');   // Linha 23 (aproximadamente)
-        const saloesData = await saloesResponse.json();
-        saloesCountSpan.textContent = saloesData.count;
+            const saloesResponse = await fetch('/api/saloes/count');
+            const saloesData = await saloesResponse.json();
+            saloesCountSpan.textContent = saloesData.count;
 
-        const usuariosResponse = await fetch('/api/usuarios/count'); // Linha 27 (aproximadamente)
-        const usuariosData = await usuariosResponse.json();
-        usuariosCountSpan.textContent = usuariosData.count;
+            const usuariosResponse = await fetch('/api/usuarios/count');
+            const usuariosData = await usuariosResponse.json();
+            usuariosCountSpan.textContent = usuariosData.count;
 
-    } catch (error) {
-        console.error('Erro ao buscar contagens:', error);
-        // Lógica para exibir uma mensagem de erro no dashboard, se necessário
+        } catch (error) {
+            console.error('Erro ao buscar contagens:', error);
+            // Lógica para exibir uma mensagem de erro no dashboard, se necessário
+        }
     }
-}
 
     // Função para buscar e exibir a lista de clientes
     async function fetchClientes() {
@@ -57,8 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
             row.insertCell().textContent = cliente.id_cliente;
             row.insertCell().textContent = cliente.nome_cliente;
             row.insertCell().textContent = cliente.email_cliente;
-            row.insertCell().textContent = cliente.telefone_cliente || ''; // Evita erro se for nulo
-            row.insertCell().textContent = cliente.região_cliente || '';   // Adicione se existir
+            row.insertCell().textContent = cliente.telefone_cliente || '';
+            row.insertCell().textContent = cliente.região_cliente || '';
             row.insertCell().textContent = new Date(cliente.data_cadastro).toLocaleDateString();
             const actionsCell = row.insertCell();
             actionsCell.innerHTML = `
@@ -141,6 +143,19 @@ document.addEventListener('DOMContentLoaded', () => {
         modalTitle.textContent = 'Adicionar Cliente';
         clienteForm.reset();
         clienteIdInput.value = ''; // Limpa o ID para adicionar um novo cliente
+        clienteModal.show();
+    });
+
+      // Inicializa o modal no evento de clique do botão "Adicionar Cliente"
+    addClienteBtn.addEventListener('click', () => {
+        modalTitle.textContent = 'Adicionar Cliente';
+        clienteForm.reset();
+        clienteIdInput.value = '';
+        // Garante que o modal seja inicializado apenas uma vez
+        if (!clienteModal) {
+            clienteModal = new bootstrap.Modal(clienteModalEl);
+        }
+        clienteModal.show();
     });
 
     // Event listener para o botão "Salvar" no modal (Adicionar/Editar)
@@ -175,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                Swal.fire('Erro!', errorData.error || 'Erro ao salvar o cliente.', 'error');
+                Swal.fire('Erro!', errorData.error || `Erro ao salvar o cliente: ${response.status}`, 'error');
                 return;
             }
 
