@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors'); // Permite que o front acesse o backend
-const supabase = require ('./supabase.js')
+const supabase = require('./supabase.js');
 const bcrypt = require('bcrypt');
 const path = require('path');
 const { error } = require('console');
@@ -10,41 +10,95 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd')));
 
+async function adicionarCliente() {
+    const nome_cliente = document.getElementById("nome_cliente").value;
+    const email_cliente = document.getElementById("email_cliente").value;
+    const telefone_cliente = document.getElementById("telefone_cliente").value;
+    const regiao_cliente = document.getElementById("regiao_cliente").value;
+    const senha_cliente = document.getElementById("senha_cliente").value;
+
+    // Validação básica dos campos
+    if (!nome_cliente || !email_cliente || !telefone_cliente || !regiao_cliente || !senha_cliente) {
+        alert("Por favor, preencha todos os campos!");
+        return; // Impede o envio se algum campo estiver vazio
+    }
+
+    const clienteData = {
+        nome_cliente,
+        email_cliente,
+        telefone_cliente,
+        região_cliente,
+        senha_cliente,
+    };
+
+    try {
+        const response = await fetch("/clientes", { // Use a rota /clientes
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(clienteData),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Erro ao cadastrar cliente: ${response.status} - ${errorText}`);
+        }
+
+        const responseData = await response.json(); // Obtém os dados da resposta
+
+        alert(responseData.message); // Exibe mensagem de sucesso
+
+        // Limpa o formulário após o sucesso
+        document.getElementById("nome_cliente").value = "";
+        document.getElementById("email_cliente").value = "";
+        document.getElementById("telefone_cliente").value = "";
+        document.getElementById("regiao_cliente").value = "";
+        document.getElementById("senha_cliente").value = "";
+
+       // Atualiza a página ou redireciona, se necessário
+        // window.location.href = '/lista_clientes.html'; // Exemplo de redirecionamento
+    } catch (error) {
+        console.error("Erro:", error);
+        alert("Erro ao cadastrar cliente. Verifique o console para mais detalhes.");
+    }
+}
+
 // Rota para obter a contagem de clientes
 app.get('/api/clientes/count', async (req, res) => {
     try {
-        const { count, error} = await supabase
-        .from('clientes')
-        .select('*', {count: 'exact'});
+        const { count, error } = await supabase
+            .from('clientes')
+            .select('*', { count: 'exact' });
 
-        if(error){
+        if (error) {
             console.error('Erro ao obter contagem de clientes:', error);
-            return res.status(500).json({error: 'Erro ao bter a contagem de clientes'});
+            return res.status(500).json({ error: 'Erro ao obter a contagem de clientes' });
         }
 
-        res.json({count});
-    } catch (error){
+        res.json({ count });
+    } catch (error) {
         console.error('Erro no servidor ao obter a contagem de clientes', error);
-        res.status(500).json({error: 'Erro interno do servidor'})
+        res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
 
 // Rota para obter a contagem de salões
-app.get('/api/saloes/count', async (req, res) =>{
-    try{
-        const {count, error} = await supabase
-        .from('salao')
-        .select('*', {count: 'exact'})
+app.get('/api/saloes/count', async (req, res) => {
+    try {
+        const { count, error } = await supabase
+            .from('salao')
+            .select('*', { count: 'exact' })
 
-        if(error){
+        if (error) {
             console.error('Erro ao obter a contagem de salões:', error);
-            return res.status(500).json({error: 'Erro ao obter contagem de salões'});
+            return res.status(500).json({ error: 'Erro ao obter contagem de salões' });
         }
 
-        res.json({count});
-    } catch(error){
+        res.json({ count });
+    } catch (error) {
         console.error('Erro no servidor ao obter contagem de salões:', error);
-        res.status(500).json({error: 'Erro interno do servidor'})
+        res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
 
@@ -110,30 +164,30 @@ app.get('/cadastro_usuario', (req, res) => {
     console.log('Tentando acessar:', filePath); // Debug
     res.sendFile(filePath);
 });
-app.post("/cadastro_usuario", async (req,res) => {
-    const{nome_completo, email, CPF, telefone, usuario, senha}= req.body;
+app.post("/cadastro_usuario", async (req, res) => {
+    const { nome_completo, email, CPF, telefone, usuario, senha } = req.body;
 
     console.log("Requisição recebida para /cadastro_usuario", req.body);
 
     try {
 
         // Verifica se o usuario já existe
-        const {data: usuarioExistente, error: erroConsulta} = await supabase
+        const { data: usuarioExistente, error: erroConsulta } = await supabase
             .from("usuario_dono")
             .select("id_dono")
             .or(`email_dono.eq.${email},CPF.eq.${CPF},usuario.eq.${usuario}`)
             .maybeSingle();
 
-        if(erroConsulta) throw erroConsulta;
-        if(usuarioExistente){
-            return res.status(400).json({error: "Usuario, e-mail ou CPF já cadastrado"});
+        if (erroConsulta) throw erroConsulta;
+        if (usuarioExistente) {
+            return res.status(400).json({ error: "Usuario, e-mail ou CPF já cadastrado" });
         }
 
         // Cria hash da senha
         const senhaHash = await bcrypt.hash(senha, 10);
 
         // Insere no banco
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from("usuario_dono")
             .insert([{
                 nome_dono: nome_completo,
@@ -145,9 +199,9 @@ app.post("/cadastro_usuario", async (req,res) => {
             }])
             .select("id_dono");
 
-        if(error){
+        if (error) {
             console.log("Erro Supabase", error);
-            return res.status(500).json({error: "Erro ao cadastrar", datails: error.message});
+            return res.status(500).json({ error: "Erro ao cadastrar", datails: error.message });
         }
 
         res.status(201).json({
@@ -155,7 +209,7 @@ app.post("/cadastro_usuario", async (req,res) => {
             id_dono: data[0].id_dono
         });
 
-    } catch (error){
+    } catch (error) {
         console.error("Erro no servidor", error);
         res.status(500).json({
             error: "Erro interno",
@@ -260,7 +314,7 @@ app.get('/clientes', async (req, res) => {
     res.sendFile(filePath)
 })
 app.post('/clientes', async (req, res) => {
-    const{
+    const {
         nome_cliente,
         email_cliente,
         telefone_cliente,
@@ -268,10 +322,10 @@ app.post('/clientes', async (req, res) => {
         senha_cliente
     } = req.body;
 
-    try{
+    try {
         const senhaHash = await bcrypt.hash(senha_cliente, 10);
 
-        const {data, error} = await supabase
+        const { data, error } = await supabase
             .from('clientes')
             .insert([{
                 nome_cliente,
@@ -279,15 +333,16 @@ app.post('/clientes', async (req, res) => {
                 telefone_cliente,
                 região_cliente,
                 senha_cliente: senhaHash
-            }]);
+            }])
+            .select(); // Adicione o .select() para retornar os dados inseridos
 
-        if (error){
-            return res.status(500).json({error: error.message});
+        if (error) {
+            return res.status(500).json({ error: error.message });
         }
 
-        res.status(201).json({message: 'Cliente cadastrado com sucesso'});
-    }   catch(error){
-        res.status(500).json({error: error.message})
+        res.status(201).json({ message: 'Cliente cadastrado com sucesso', data: data ? data[0] : null }); // Retorne os dados
+    } catch (error) {
+        res.status(500).json({ error: error.message })
     }
 });
 
@@ -332,12 +387,11 @@ app.post("/cadastro_salao", async (req, res) => {
                 localizacao: idLocalizacao, // <---- CORREÇÃO AQUI: Use idLocalizacao
                 dono: Number(req.body.id_dono)
             }])
-            .select();
+            .select(); // Adicione o .select() para retornar os dados inseridos
 
         if (salaoError) throw salaoError;
 
-        res.json({ success: true, id_salao: salaoData[0].id });
-
+        res.json({ success: true, id_salao: salaoData ? salaoData[0].id : null }); // Retorne os dados
     } catch (error) {
         console.error('Erro ao cadastrar salão:', error);
         res.status(500).json({ error: "Erro ao cadastrar salão", details: error.message });
@@ -375,7 +429,7 @@ app.get('/api/clientes/:id', async (req, res) => {
 
         if (error) {
             console.error("Erro ao obter cliente por ID:", error);
-             if (error.message === "No rows found") {
+            if (error.message === "No rows found") {
                 return res.status(404).json({ error: 'Cliente não encontrado' });
             }
             return res.status(500).json({ error: 'Erro ao obter cliente' });
@@ -419,17 +473,18 @@ app.put('/api/clientes/:id', async (req, res) => {
         const { data, error } = await supabase
             .from('clientes')
             .update(updateData)
-            .eq('id_cliente', id);
+            .eq('id_cliente', id)
+            .select(); // Adicione .select() para retornar os dados atualizados
 
         if (error) {
             console.error("Erro ao atualizar cliente:", error);
             return res.status(500).json({ error: 'Erro ao atualizar cliente' });
         }
-        if (data.length === 0) {
-             return res.status(404).json({ error: 'Cliente não encontrado' });
+        if (!data || data.length === 0) { // Verifique se data é null ou vazio
+            return res.status(404).json({ error: 'Cliente não encontrado' });
         }
 
-        res.json({ message: 'Cliente atualizado com sucesso' });
+        res.json({ message: 'Cliente atualizado com sucesso', data: data ? data[0] : null }); // Retorne os dados atualizados
     } catch (error) {
         console.error("Erro no servidor ao atualizar cliente:", error);
         res.status(500).json({ error: 'Erro interno do servidor' });
@@ -443,23 +498,24 @@ app.delete('/api/clientes/:id', async (req, res) => {
         const { data, error } = await supabase
             .from('clientes')
             .delete()
-            .eq('id_cliente', id);
+            .eq('id_cliente', id)
+            .select();  // Adicione .select() para retornar os dados deletados
 
         if (error) {
             console.error("Erro ao deletar cliente:", error);
             return res.status(500).json({ error: 'Erro ao deletar cliente' });
         }
-        if (data.length === 0) {
-             return res.status(404).json({ error: 'Cliente não encontrado' });
+        if (!data || data.length === 0) { // Verifique se data é null ou vazio.
+            return res.status(404).json({ error: 'Cliente não encontrado' });
         }
 
-        res.json({ message: 'Cliente deletado com sucesso' });
+        res.json({ message: 'Cliente deletado com sucesso', data: data ? data[0] : null }); //retorne os dados deletados
     } catch (error) {
         console.error("Erro no servidor ao deletar cliente:", error);
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 });
 
-app.listen(3000, () =>{
-    console.log('Servidor rodando na porta 3000')
-})
+app.listen(3000, () => {
+    console.log('Servidor rodando na porta 3000');
+});
