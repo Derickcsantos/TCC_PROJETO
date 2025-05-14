@@ -267,7 +267,6 @@ h1 {
     display: none;
 }
 
-<style>
     .form-footer {
         display: flex;
         flex-direction: column;
@@ -276,7 +275,7 @@ h1 {
     }
     
     .btn-cadastrar {
-        background-color: #3b82f6;
+        background-color:  rgb(212, 175, 55);
         color: white;
         padding: 10px;
         border-radius: 5px;
