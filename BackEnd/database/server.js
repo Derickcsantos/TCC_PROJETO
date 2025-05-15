@@ -10,59 +10,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd')));
 
-async function adicionarCliente() {
-    const nome_cliente = document.getElementById("nome_cliente").value;
-    const email_cliente = document.getElementById("email_cliente").value;
-    const telefone_cliente = document.getElementById("telefone_cliente").value;
-    const regiao_cliente = document.getElementById("regiao_cliente").value;
-    const senha_cliente = document.getElementById("senha_cliente").value;
-
-    // Validação básica dos campos
-    if (!nome_cliente || !email_cliente || !telefone_cliente || !regiao_cliente || !senha_cliente) {
-        alert("Por favor, preencha todos os campos!");
-        return; // Impede o envio se algum campo estiver vazio
-    }
-
-    const clienteData = {
-        nome_cliente,
-        email_cliente,
-        telefone_cliente,
-        região_cliente,
-        senha_cliente,
-    };
-
-    try {
-        const response = await fetch("/clientes", { // Use a rota /clientes
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(clienteData),
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Erro ao cadastrar cliente: ${response.status} - ${errorText}`);
-        }
-
-        const responseData = await response.json(); // Obtém os dados da resposta
-
-        alert(responseData.message); // Exibe mensagem de sucesso
-
-        // Limpa o formulário após o sucesso
-        document.getElementById("nome_cliente").value = "";
-        document.getElementById("email_cliente").value = "";
-        document.getElementById("telefone_cliente").value = "";
-        document.getElementById("regiao_cliente").value = "";
-        document.getElementById("senha_cliente").value = "";
-
-       // Atualiza a página ou redireciona, se necessário
-        // window.location.href = '/lista_clientes.html'; // Exemplo de redirecionamento
-    } catch (error) {
-        console.error("Erro:", error);
-        alert("Erro ao cadastrar cliente. Verifique o console para mais detalhes.");
-    }
-}
 
 // Rota para obter a contagem de clientes
 app.get('/api/clientes/count', async (req, res) => {
@@ -359,7 +306,7 @@ app.post("/cadastro_salao", async (req, res) => {
     }
 
     try {
-        console.log("Buscando id_localizacao para a região:", req.body.localizacao); // ADICIONE ESTE LOG
+        console.log("Buscando id_localizacao para a região:", req.body.localizacao); 
 
         const { data: localizacaoData, error: localizacaoError } = await supabase
             .from('localizacao')
@@ -367,8 +314,8 @@ app.post("/cadastro_salao", async (req, res) => {
             .eq('regiao', req.body.localizacao)
             .single();
 
-        console.log("Resultado da busca de localizacaoData:", localizacaoData); // ADICIONE ESTE LOG
-        console.log("Erro na busca de localizacaoError:", localizacaoError); // ADICIONE ESTE LOG
+        console.log("Resultado da busca de localizacaoData:", localizacaoData);
+        console.log("Erro na busca de localizacaoError:", localizacaoError); 
 
         if (localizacaoError || !localizacaoData) {
             return res.status(400).json({ error: "Localização inválida" });
@@ -420,6 +367,7 @@ app.get('/api/clientes', async (req, res) => {
 // Rota para obter um cliente por ID
 app.get('/api/clientes/:id', async (req, res) => {
     const id = req.params.id;
+    console.log(`Recebida requisição para /api/clientes/${id}`);
     try {
         const { data, error } = await supabase
             .from('clientes')
@@ -443,6 +391,45 @@ app.get('/api/clientes/:id', async (req, res) => {
     } catch (error) {
         console.error("Erro no servidor ao obter cliente por ID:", error);
         res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+});
+
+app.post('/api/clientes', async (req, res) => {
+    const { nome_cliente, email_cliente, telefone_cliente, região_cliente, senha_cliente } = req.body;
+
+    // Console log para debug
+    console.log("Dados recebidos para POST /api/clientes:", req.body);
+
+    if (!nome_cliente || !email_cliente || !telefone_cliente || !região_cliente || !senha_cliente) {
+        return res.status(400).json({ error: "Todos os campos são obrigatórios." }); // Melhore a resposta de erro
+    }
+
+    try {
+        const senhaHash = await bcrypt.hash(senha_cliente, 10);
+        const { data, error } = await supabase
+            .from('clientes')
+            .insert([{
+                nome_cliente,
+                email_cliente,
+                telefone_cliente,
+                região_cliente,
+                senha_cliente: senhaHash,
+            }])
+            .select(); // Adicione o .select() para retornar os dados inseridos
+
+        if (error) {
+            console.error("Erro ao inserir cliente no banco de dados:", error);
+            return res.status(500).json({ error: 'Erro ao cadastrar cliente no banco de dados', details: error.message }); // Inclua detalhes do erro
+        }
+        if (!data || data.length === 0) {
+            return res.status(500).json({ error: "Falha ao inserir o cliente" });
+        }
+        // Console log de sucesso
+        console.log("Cliente cadastrado com sucesso:", data);
+        res.status(201).json({ message: 'Cliente cadastrado com sucesso', data: data[0] }); // Retorne os dados do cliente criado
+    } catch (error) {
+        console.error("Erro no servidor ao cadastrar cliente:", error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message }); // Inclua detalhes do erro
     }
 });
 
