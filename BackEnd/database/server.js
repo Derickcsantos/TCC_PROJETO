@@ -503,6 +503,144 @@ app.delete('/api/clientes/:id', async (req, res) => {
     }
 });
 
+// Rota par aobter todos os salões
+app.get('/api/saloes', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('salao')
+            .select('*');
+
+        if (error) {
+            console.error("Erro ao obter salões:", error);
+            return res.status(500).json({ error: 'Erro ao obter salões', details: error.message });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error("Erro no servidor ao obter salões:", error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para obter um salão por ID
+app.get('/api/saloes/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const { data, error } = await supabase
+            .from('salao')
+            .select('*')
+            .eq('id_salao', id) // Use o nome correto da coluna de ID
+            .single();
+
+        if (error) {
+            console.error("Erro ao obter salão por ID:", error);
+            if (error.message === "No rows found") {
+                return res.status(404).json({ error: 'Salão não encontrado' });
+            }
+            return res.status(500).json({ error: 'Erro ao obter salão', details: error.message });
+        }
+
+        if (!data) {
+            return res.status(404).json({ error: 'Salão não encontrado' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error("Erro no servidor ao obter salão por ID:", error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para criar um novo salão
+app.post('/api/saloes', async (req, res) => {
+    const { nome, endereco, telefone, horario_funcionamento, servicos } = req.body;
+
+    // Validar dados
+    if (!nome || !endereco || !telefone || !horario_funcionamento) {
+        return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+    }
+
+    try {
+        // Inserir no banco de dados
+        const { data, error } = await supabase
+            .from('salao')
+            .insert([{
+                nome,
+                endereco,
+                telefone,
+                horario_funcionamento,
+                servicos, // Assumindo que 'servicos' é um array ou string
+                data_cadastro: new Date()
+            }])
+            .select(); // Retorna os dados inseridos
+
+        if (error) {
+            console.error("Erro ao cadastrar salão:", error);
+            return res.status(500).json({ error: "Erro ao cadastrar salão", details: error.message });
+        }
+        if (!data || data.length === 0) {
+            return res.status(500).json({ error: "Falha ao inserir salão" });
+        }
+
+        res.status(201).json({ message: "Salão cadastrado com sucesso", data: data[0] });
+    } catch (error) {
+        console.error("Erro no servidor:", error);
+        res.status(500).json({ error: "Erro interno do servidor", details: error.message });
+    }
+});
+
+// Rota para atualizar um salão por ID
+app.put('/api/saloes/:id', async (req, res) => {
+    const id = req.params.id;
+    const { NomeSalao, enderecoSalao, telefoneSalao, } = req.body;
+
+    try {
+        const { data, error } = await supabase
+            .from('salao')
+            .update({ nome_salao: NomeSalao, endereco: enderecoSalao, telefone: telefoneSalao }) //campos que podem ser atualizados
+            .eq('id_salao', id) // Use o nome correto da coluna de ID
+            .select();  // Retorna os dados atualizados
+
+        if (error) {
+            console.error("Erro ao atualizar salão:", error);
+            return res.status(500).json({ error: 'Erro ao atualizar salão', details: error.message });
+        }
+        if (!data || data.length === 0) {
+            return res.status(404).json({ error: 'Salão não encontrado' });
+        }
+
+        res.json({ message: 'Salão atualizado com sucesso', data: data ? data[0] : null });
+    } catch (error) {
+        console.error("Erro no servidor ao atualizar salão:", error);
+        res.status(500).json({ error: "Erro interno do servidor", details: error.message });
+    }
+});
+
+// Rota para deletar um salão por ID
+app.delete('/api/saloes/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const { data, error } = await supabase
+            .from('salao')
+            .delete()
+            .eq('id_salao', id) // Use o nome correto da coluna de ID
+            .select();       // Retorna os dados deletados
+
+        if (error) {
+            console.error("Erro ao deletar salão:", error);
+            return res.status(500).json({ error: 'Erro ao deletar salão', details: error.message });
+        }
+        if (!data || data.length === 0) {
+            return res.status(404).json({ error: 'Salão não encontrado' });
+        }
+
+        res.json({ message: 'Salão deletado com sucesso', data: data ? data[0] : null });
+    } catch (error) {
+        console.error("Erro no servidor ao deletar salão:", error);
+        res.status(500).json({ error: "Erro interno do servidor", details: error.message });
+    }
+});
+
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
 });
