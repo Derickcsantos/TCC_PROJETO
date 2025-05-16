@@ -72,7 +72,7 @@
             <div class="content-section" id="clientes-content" style="display: none;">
                 <div class="section-header">
                     <h2>Gerenciamento de Clientes</h2>
-                    <button class="btn btn-primary" id="add-cliente-btn" data-bs-toggle="modal" data-bs-target="clienteModal">
+                    <button class="btn btn-primary" id="add-cliente-btn" data-bs-toggle="modal" data-bs-target="#clienteModal">
                         <i class="fas fa-plus"></i> Adicionar Cliente
                     </button>
                 </div>
@@ -90,10 +90,11 @@
                             </tr>
                         </thead>
                         <tbody id="clientes-table-body">
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>
+            
 
             <div class="modal fade" id="clienteModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
@@ -121,8 +122,8 @@
                                     <label for="regiao" class="form-label">Região</label>
                                     <input type="text" class="form-control" id="regiao">
                                 </div>
-                                <div class="mb-3">
-                                    <label for="telefone" class="form-label">Senha</label>
+                                 <div class="mb-3">
+                                    <label for="senha" class="form-label">Senha</label>
                                     <input type="password" class="form-control" id="senha">
                                     <small class="text-muted">Deixe em branco para não alterar.</small>
                                 </div>
@@ -135,6 +136,100 @@
                     </div>
                 </div>
             </div>
+             <div class="content-section" id="saloes-content" style="display: none">
+                <div class="section-header">
+                    <h2>Gerenciamento de Salões</h2>
+                    <button
+                    class="btn btn-success"
+                    id="add-salao-btn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#salaoModal"
+                    >
+                    <i class="fas fa-plus"></i> Adicionar Salão
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                    <thead>
+                        <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Endereço</th>
+                        <th>Telefone</th>
+                        <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="saloes-table-body"></tbody>
+                    </table>
+                </div>
+            </div>
+             <div
+                class="modal fade"
+                id="salaoModal"
+                tabindex="-1"
+                aria-hidden="true"
+                >
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="salaoModalTitle">Adicionar Salão</h5>
+                        <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="salaoForm">
+                        <input type="hidden" id="salaoId" />
+                        <div class="mb-3">
+                            <label for="nome" class="form-label">Nome do Salão:</label>
+                            <input
+                            type="text"
+                            class="form-control"
+                            id="nome"
+                            name="nome"
+                            required
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="endereco" class="form-label">Endereço:</label>
+                            <input
+                            type="text"
+                            class="form-control"
+                            id="endereco"
+                            name="endereco"
+                            required
+                            />
+                        </div>
+                        <div class="mb-3">
+                            <label for="telefone" class="form-label">Telefone:</label>
+                            <input
+                            type="text"
+                            class="form-control"
+                            id="telefone"
+                            name="telefone"
+                            required
+                            />
+                        </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                        >
+                        Cancelar
+                        </button>
+                        <button type="button" class="btn btn-primary" id="saveSalaoBtn">
+                        Salvar
+                        </button>
+                    </div>
+                    </div>
+                </div>
+                </div>
         </div>
     </div>
 
