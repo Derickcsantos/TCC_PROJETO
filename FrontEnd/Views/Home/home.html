@@ -64,7 +64,7 @@
         <nav>
             <div class="logo">
                 <a href="index.html">
-                    <img src="../img/logao.png" alt="">
+                    <img src="../assets/img/logao.png" alt="">
                 </a>
             </div>
             <div class="pesquisa">
@@ -73,9 +73,15 @@
             </div>
             <i class="fas fa-bars menu-icon"></i>
             <ul class="menu">
-                <li><button class="cadastro"  onclick="window.location.href='cadastro.html'">Listar sua empresa</button></li>
-                <i class="fa-solid fa-user"></i>
-            </ul>
+    <li><button class="cadastro" onclick="window.location.href='cadastro.html'">Listar sua empresa</button></li>
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle"><i class="fa-solid fa-user"></i></a>
+        <ul class="dropdown-menu">
+            <li><a href="/login">Login</a></li>
+            <li><a href="/cadastro">Cadastro</a></li>
+        </ul>
+    </li>
+</ul>
         </nav>
     </header>
     <div class="container">
@@ -94,15 +100,14 @@
                             </div>
                             <div class="conteudo">
                                 <div class="avaliacao">
-                                    <i class="fa-regular fa-star"></i>
-                                    <i class="fa-regular fa-star"></i>
-                                    <i class="fa-regular fa-star"></i>
-                                    <i class="fa-regular fa-star"></i>
-                                    <i class="fa-regular fa-star"></i>
-            
+                                     <i class="fa-regular fa-star" data-index="5"></i>
+                                     <i class="fa-regular fa-star" data-index="4"></i>
+                                     <i class="fa-regular fa-star" data-index="3"></i>
+                                     <i class="fa-regular fa-star" data-index="2"></i>
+                                     <i class="fa-regular fa-star" data-index="1"></i>                 
                                 </div>
             
-                                <button>Agende</button>
+                                <button><a href="">Agende</a></button>
                             </div>
                         </div>  
                         <div class="salao">
@@ -116,10 +121,8 @@
                                     <i class="fa-regular fa-star"></i>
                                     <i class="fa-regular fa-star"></i>
                                     <i class="fa-regular fa-star"></i>
-            
                                 </div>
-            
-                                <button>Agende</button>
+                                <button><a href="">Agende</a></button>
                             </div>
                         </div>
                         <div class="salao">
@@ -133,10 +136,8 @@
                                     <i class="fa-regular fa-star"></i>
                                     <i class="fa-regular fa-star"></i>
                                     <i class="fa-regular fa-star"></i>
-            
                                 </div>
-            
-                                <button>Agende</button>
+                                <button><a href="">Agende</a></button>
                             </div>
                         </div>
 
@@ -153,10 +154,8 @@
                                         <i class="fa-regular fa-star"></i>
                                         <i class="fa-regular fa-star"></i>
                                         <i class="fa-regular fa-star"></i>
-                
                                     </div>
-                
-                                    <button>Agende</button>
+                                    <button><a href="">Agende</a></button>
                                 </div>
                             </div>  
                             <div class="salao">
@@ -172,8 +171,7 @@
                                         <i class="fa-regular fa-star"></i>
                 
                                     </div>
-                
-                                    <button>Agende</button>
+                                    <button><a href="">Agende</a></button>
                                 </div>
                             </div>
                             <div class="salao">
@@ -187,10 +185,8 @@
                                         <i class="fa-regular fa-star"></i>
                                         <i class="fa-regular fa-star"></i>
                                         <i class="fa-regular fa-star"></i>
-                
                                     </div>
-                
-                                    <button>Agende</button>
+                                    <button><a href="">Agende</a></button>
                                 </div>
                             </div>
 
