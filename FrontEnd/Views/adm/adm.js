@@ -225,10 +225,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     addSalaoBtn.addEventListener('click', () => {
-        salaoModalTitle.textContent = 'Adicionar Salão';
-        salaoForm.reset();
-        salaoIdInput.value = '';
-        salaoModal.show();
+        window.location.href = 'http://localhost:3000/cadastro_usuario'
     });
 
     // Event listener para o botão "Salvar" no modal (Adicionar/Editar)
