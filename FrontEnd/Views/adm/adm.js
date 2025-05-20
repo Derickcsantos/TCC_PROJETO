@@ -336,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Erro HTTP! Status: ${response.status}`);
             }
             const salao = await response.json();
+            console.log('Detalhes do salão recebidos:', salao)
             populateSalaoForm(salao);
         } catch (error) {
             console.error('Erro ao buscar detalhes do salão:', error);
@@ -343,9 +344,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateSalaoForm(salao) {
-        document.getElementById('nome').value = salao.nome_salao;
-        document.getElementById('endereco').value = salao.endereco;
-        document.getElementById('telefone').value = salao.telefone;
+        console.log('Dados do salão para popular o formulário:', salao)
+        document.getElementById('nome-salao').value = salao.nome_salao;
+        document.getElementById('endereco-salao').value = salao.endereco;
+        document.getElementById('telefone-salao').value = salao.telefone;
     }
 
     async function deleteSalao(id) {
@@ -363,9 +365,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     saveSalaoBtn.addEventListener('click', async () => {
-        const nomeSalao = document.getElementById('nome').value;
-        const enderecoSalao = document.getElementById('endereco').value;
-        const telefoneSalao = document.getElementById('telefone').value;
+        const nomeSalao = document.getElementById('nome-salao').value;
+        const enderecoSalao = document.getElementById('endereco-salao').value;
+        const telefoneSalao = document.getElementById('telefone-salao').value;
         const idSalao = salaoIdInput.value;
         const isEdit = idSalao !== '';
 
