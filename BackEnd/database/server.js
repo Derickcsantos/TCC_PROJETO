@@ -503,7 +503,7 @@ app.delete('/api/clientes/:id', async (req, res) => {
     }
 });
 
-// Rota par aobter todos os salões
+// Rota para obter todos os salões
 app.get('/api/saloes', async (req, res) => {
     try {
         const { data, error } = await supabase
@@ -592,14 +592,21 @@ app.post('/api/saloes', async (req, res) => {
 // Rota para atualizar um salão por ID
 app.put('/api/saloes/:id', async (req, res) => {
     const id = req.params.id;
-    const { NomeSalao, enderecoSalao, telefoneSalao, } = req.body;
+    const {nome_salao, endereco, telefone} = req.body;
+
+    console.log('ID do salão', id);
+    console.log('Valores antes do update', {nome_salao, endereco, telefone});
 
     try {
         const { data, error } = await supabase
             .from('salao')
-            .update({ nome_salao: NomeSalao, endereco: enderecoSalao, telefone: telefoneSalao }) //campos que podem ser atualizados
+            .update({ nome_salao: nome_salao,
+                    endereco: endereco,
+                    telefone: telefone }) //campos que podem ser atualizados
             .eq('id_salao', id) // Use o nome correto da coluna de ID
-            .select();  // Retorna os dados atualizados
+            .select('id_salao, nome_salao, endereco, telefone, descricao, imagem_url, dono, localizacao, numero_salao, complemento_salao');  // Retorna os dados atualizados
+
+        console.log('Retorno do supabase', {data, error});
 
         if (error) {
             console.error("Erro ao atualizar salão:", error);
