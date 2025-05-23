@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Cut</title>
+    <link rel="stylesheet" href="Views/Home/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="Views/Home/img/loogo.png" alt="Logo Time Cut">
+            
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#sobre">Sobre</a></li>
+                <li><a href="#funcionarios">Funcionários</a></li>
+                <li><a href="#galeria">Galeria</a></li>
+                <li><a href="#servicos">Serviços</a></li>
+                <li><a href="#contato">Contato</a></li>
+                <li><a href="#" id="login-btn"><i class="fas fa-user"></i> Login</a></li>     
+            </ul>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Time Cut</h2>
+                <p>O melhor cuidado para o seu estilo</p>
+                <a href="#servicos" class="btn">Agendar Horário</a>
+            </div>
+        </section>
+
+        <section id="sobre" class="about">
+            <div class="container">
+                <div class="about-info">
+                    <h2>Sobre Nós</h2>
+                    <p>No Time Cut, combinamos tradição com técnicas modernas para oferecer o melhor serviço de cuidados masculinos. Nossa equipe altamente qualificada está pronta para superar suas expectativas.</p>
+                    <div class="diferenciais">
+                        <div class="diferencial">
+                            <i class="fas fa-cut"></i>
+                            <p>Cortes Personalizados</p>
+                        </div>
+                        <div class="diferencial">
+                            <i class="fas fa-clock"></i>
+                            <p>Atendimento Puntual</p>
+                        </div>
+                        <div class="diferencial">
+                            <i class="fas fa-award"></i>
+                            <p>Produtos Premium</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-container">
+                    <h3>Onde Estamos</h3>
+                    <div class="map">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.106696296001!2d-46.65390548502234!3d-23.564611167596423!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59c8da0aa315%3A0xd59f9431f2c9776a!2sAv.%20Paulista%2C%20S%C3%A3o%20Paulo%20-%20SP!5e0!3m2!1spt-BR!2sbr!4v1633023222539!5m2!1spt-BR!2sbr" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                    <div class="contact-info">
+                        <p><i class="fas fa-map-marker-alt"></i> Av. Paulista, 1000 - São Paulo/SP</p>
+                        <p><i class="fas fa-phone"></i> (11) 4002-8922</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="funcionarios" class="team">
+            <h2>Nossos Profissionais</h2>
+            <div class="team-container">
+                <div class="team-member">
+                    <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Barbeiro João">
+                    <h3>Luna Gomes</h3>
+                    <p>Especialista em cortes clássicos</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Barbeiro Carlos">
+                    <h3>Carlos Mendes</h3>
+                    <p>Mestre em barbas</p>
+                </div>
+                <div class="team-member">
+                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Barbeiro Pedro">
+                    <h3>Pedro Rocha</h3>
+                    <p>Estilista moderno</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="galeria" class="gallery">
+            <h2>Nossa Galeria</h2>
+            <div class="gallery-container">
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Corte de cabelo">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Barba feita">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Estilo vintage">
+                </div>
+                <div class="gallery-item">
+                    <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60" alt="Ambiente da barbearia">
+                </div>
+            </div>
+        </section>
+
+        <section id="servicos" class="services">
+            <h2>Nossos Serviços</h2>
+            <div class="services-container">
+                <div class="service-card">
+                    <h3>Corte de Cabelo</h3>
+                    <p class="duration">48 min</p>
+                    <p class="price">R$ 64,55</p>
+                    <button class="btn-book">Agendar</button>
+                </div>
+                <div class="service-card">
+                    <h3>Sobrancelha</h3>
+                    <p class="duration">5 min</p>
+                    <p class="price">R$ 19,50</p>
+                    <button class="btn-book">Agendar</button>
+                </div>
+                <div class="service-card">
+                    <h3>Barba</h3>
+                    <p class="duration">70 min</p>
+                    <p class="price">R$ 65,43</p>
+                    <button class="btn-book">Agendar</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <p class="register-link">Não tem uma conta? <a href="#" id="register-btn">Cadastre-se</a></p>
+            </form>
+        </div>
+    </div>
+    
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Cadastro</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-name">Nome:</label>
+                    <input type="text" id="reg-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">E-mail:</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Senha:</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirmar Senha:</label>
+                    <input type="password" id="reg-confirm" required>
+                </div>
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer id="contato">
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>Time Cut</h3>
+                <p>Av. Paulista, 1000 - São Paulo/SP</p>
+                <p>(11) 4002-8922</p>
+            </div>
+            <div class="footer-hours">
+                <h3>Horário de Funcionamento</h3>
+                <p>Segunda a Sexta: 09:00 - 19:00</p>
+                <p>Sábado: 09:00 - 17:00</p>
+                <p>Domingo: Fechado</p>
+            </div>
+            <div class="footer-social">
+                <h3>Redes Sociais</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Time Cut. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="Views/Home/home.js"></script>
+</body>
+</html>
