@@ -180,74 +180,82 @@ app.post('/loginC', async (req, res) => {
     console.log("Senha recebida no login:", senha);
 
     try {
-        // 1. Tenta buscar o usuário na tabela 'adm'
+        // --- 1. TENTATIVA DE LOGIN COMO ADMINISTRADOR ---
+        // Busca o usuário na tabela 'adm'
         const { data: administrador, error: errorAdm } = await supabase
             .from('adm')
             .select('*')
             .eq('email_adm', email)
             .single();
 
-        console.log("Dados do administrador encontrado:", administrador);
-
-        if (errorAdm) {
-            console.error("Erro ao consultar tabela adm:", errorAdm);
-            // Não retorna erro aqui para tentar buscar como cliente
-        }
-
-        // Verifica se um administrador foi encontrado E se a senha_adm existe
-        if (administrador && administrador.senha_adm) {
-            console.log("Senha hash do administrador no banco:", administrador.senha_adm);
-            try {
-                const senhaValidaAdm = await bcrypt.compare(senha, administrador.senha_adm);
-                if (senhaValidaAdm) {
-                    console.log("Senha do administrador VÁLIDA - Redirecionando!"); // ADICIONE ESTE LOG
-                    return res.redirect('Views/cliente_logado/logadoC.html');
-                } else {
-                    console.log("Senha do administrador inválida.");
+        // Se encontrou um possível ADM (sem erro de "no rows" direto do Supabase)
+        if (administrador) {
+            console.log("Dados do administrador encontrado:", administrador);
+            // Verifica se a senha_adm existe (hash)
+            if (administrador.senha_adm) {
+                try {
+                    // Compara a senha fornecida com a senha hash do ADM
+                    const senhaValidaAdm = await bcrypt.compare(senha, administrador.senha_adm);
+                    if (senhaValidaAdm) {
+                        console.log("Senha do administrador VÁLIDA - Login ADM bem-sucedido!");
+                        // Se for ADM válido, retorna uma resposta JSON específica
+                        return res.status(200).json({
+                            success: true,
+                            message: 'Login de administrador bem-sucedido',
+                            userType: 'admin' // Indica que é um ADM
+                        });
+                    } else {
+                        console.log("Senha do administrador inválida. Tentando como cliente...");
+                    }
+                } catch (bcryptError) {
+                    console.error("Erro ao comparar senha do administrador:", bcryptError);
+                    // Continua para tentar como cliente se houver erro no bcrypt
                 }
-            } catch (bcryptError) {
-                console.error("Erro ao comparar senha do administrador:", bcryptError);
+            } else {
+                console.log("Administrador encontrado, mas sem senha hash. Tentando como cliente...");
             }
         } else {
-            console.log("Administrador não encontrado ou senha hash ausente.");
+            console.log("Administrador não encontrado para este email. Tentando como cliente...");
         }
 
-        // Se não encontrou como administrador ou a senha estava errada, busca na tabela 'clientes'
-        const { data: cliente, error: errorCliente } = await supabase
-            .from('clientes')
-            .select('*')
-            .eq('email_cliente', email)
-            .single();
+        // --- 2. TENTATIVA DE LOGIN COMO CLIENTE (USANDO SUPABASE AUTH) ---
+        // Se não foi autenticado como ADM (ou a senha do ADM estava errada),
+        // tenta autenticar como cliente usando o sistema de autenticação do Supabase.
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: senha,
+        });
 
-        console.log("Dados do cliente encontrado:", cliente);
-
-        if (errorCliente) {
-            console.error("Erro ao consultar tabela clientes:", errorCliente);
-            return res.status(500).json({ error: "Erro ao consultar o banco de dados" });
-        }
-
-        if (!cliente) {
-            return res.status(401).json({ error: 'Email não cadastrado' });
-        }
-
-        try {
-            const senhaValidaCliente = await bcrypt.compare(senha, cliente.senha_cliente);
-            if (!senhaValidaCliente) {
-                return res.status(401).json({ error: 'Senha incorreta' });
+        if (authError) {
+            console.error("Erro na autenticação de cliente pelo Supabase Auth:", authError);
+            // Mensagens de erro mais amigáveis para o frontend
+            if (authError.message.includes('Invalid login credentials') || authError.status === 400) {
+                // Para segurança, uma mensagem genérica é melhor para o usuário final
+                return res.status(401).json({ error: 'Email ou senha incorretos.' });
             }
-
-            const { senha_cliente, ...dadosCliente } = cliente;
-            res.status(200).json({
-                message: 'Login de cliente válido',
-                cliente: dadosCliente
-            });
-        } catch (bcryptError) {
-            console.error("Erro ao comparar senha do cliente:", bcryptError);
-            return res.status(500).json({ error: 'Erro interno ao verificar senha' });
+            return res.status(500).json({ error: 'Erro interno no servidor durante autenticação de cliente.' });
         }
+
+        // Se a autenticação de cliente via Supabase Auth foi bem-sucedida
+        if (authData.user && authData.session) {
+            console.log("Login de cliente bem-sucedido pelo Supabase Auth. Usuário:", authData.user.email);
+
+            // Retorna a sessão completa do Supabase para o frontend
+            return res.status(200).json({
+                success: true,
+                message: 'Login de cliente bem-sucedido',
+                userType: 'cliente', // Indica que é um cliente
+                session: authData.session // Envia o objeto de sessão do Supabase para o frontend
+            });
+        }
+
+        // Se chegou até aqui, significa que o e-mail não foi encontrado como ADM,
+        // nem foi autenticado como cliente pelo Supabase Auth (e nenhum erro foi retornado).
+        // Isso cobriria casos onde o Supabase Auth não retorna erro mas também não retorna user/session (improvável).
+        return res.status(401).json({ error: 'Email ou senha inválidos.' });
 
     } catch (error) {
-        console.error('Erro no login:', error);
+        console.error('Erro geral no login (catch principal):', error);
         res.status(500).json({ error: 'Erro interno no servidor' });
     }
 });
