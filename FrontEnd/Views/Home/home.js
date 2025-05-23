@@ -132,3 +132,51 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('load', checkFade);
     window.addEventListener('scroll', checkFade);
 });
+
+// FrontEnd/Views/Home/home.js
+
+// Este script será executado na página home.html
+// A instância 'supabase' já estará disponível globalmente,
+// pois home.html vai carregar '../js/supabaseClient.js' antes deste.
+
+async function checkAuthAndRedirect() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+
+    if (error) {
+        console.error("Erro ao obter sessão Supabase:", error);
+        alert("Ocorreu um erro na sessão. Faça login novamente.");
+        // Caminho de Home/ para Login_cliente/
+        window.location.href = '../Login_cliente/login_cliente.html'; // Redireciona para o login
+        return;
+    }
+
+    if (!session) {
+        console.log("Nenhuma sessão ativa encontrada. Redirecionando para o login.");
+        // Caminho de Home/ para Login_cliente/
+        window.location.href = '../Login_cliente/login_cliente.html'; // Redireciona para o login
+    } else {
+        console.log("Sessão ativa para o usuário:", session.user.email);
+        // O usuário está logado, continue a carregar a página
+        // Você pode atualizar a interface do usuário aqui, por exemplo:
+        // document.getElementById('user-email').textContent = session.user.email;
+    }
+}
+
+// Chama a função de verificação assim que o script é carregado
+checkAuthAndRedirect();
+
+// Lógica para o botão de Logout
+const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        const { error } = await supabase.auth.signOut();
+        if (error) {
+            console.error("Erro ao fazer logout:", error);
+            alert("Erro ao fazer logout.");
+        } else {
+            alert("Logout realizado com sucesso!");
+            // Caminho de Home/ para Login_cliente/
+            window.location.href = '../Login_cliente/login_cliente.html'; // Redireciona para o login
+        }
+    });
+}
