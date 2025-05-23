@@ -102,7 +102,9 @@ app.post('/cadastro_adm', async (req, res) => {
 });
 // Rotas GET
 app.get('/', (req, res) => {
-    res.send('Servidor está rodando!');
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/Home/home.html');
+    console.log('acessando:', filePath);
+    res.sendFile(filePath);
 });
 
 // Rota para servir o HTML de cadastro (CORRIGIDA)
@@ -199,7 +201,7 @@ app.post('/loginC', async (req, res) => {
                 const senhaValidaAdm = await bcrypt.compare(senha, administrador.senha_adm);
                 if (senhaValidaAdm) {
                     console.log("Senha do administrador VÁLIDA - Redirecionando!"); // ADICIONE ESTE LOG
-                    return res.redirect('Views/adm/adm.html');
+                    return res.redirect('Views/cliente_logado/logadoC.html');
                 } else {
                     console.log("Senha do administrador inválida.");
                 }
@@ -251,7 +253,7 @@ app.post('/loginC', async (req, res) => {
 });
 
 // Rota para servir o arquivo adm.html
-app.get('/adm.html', (req, res) => {
+app.get('/adm', (req, res) => {
     const filePath = path.join(__dirname, '../../FrontEnd/Views/adm/adm.html');
     res.sendFile(filePath);
 });
