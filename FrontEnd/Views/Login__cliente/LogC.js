@@ -4,7 +4,7 @@
 // A instância 'supabase' será fornecida globalmente por 'FrontEnd/Views/js/supabaseClient.js'.
 // (Certifique-se de que 'supabaseClient.js' é carregado antes deste no HTML!)
 
-document.querySelector('.btn').addEventListener('click', async(event) => {
+document.querySelector('.btn').addEventListener('click', async (event) => {
     event.preventDefault();
 
     const email = document.getElementById('email').value;
@@ -25,10 +25,10 @@ document.querySelector('.btn').addEventListener('click', async(event) => {
             if (data.userType === 'admin') {
                 console.log('Login bem-sucedido para ADM - Redirecionando para adm.html');
                 // Caminho relativo de LogC.js (em Login_cliente) para adm.html (em adm)
-                window.location.href = '/adm.html';
+                window.location.href = '/adm';
             } else if (data.userType === 'cliente') {
                 console.log('Login bem-sucedido para Cliente - Armazenando sessão e redirecionando para home.html');
-                
+
                 if (data.session) {
                     // Usa a instância global 'supabase' (do supabaseClient.js) para setar a sessão.
                     await supabase.auth.setSession(data.session);
