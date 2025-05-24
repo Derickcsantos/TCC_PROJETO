@@ -221,38 +221,42 @@ app.post('/loginC', async (req, res) => {
         // --- 2. TENTATIVA DE LOGIN COMO CLIENTE (USANDO SUPABASE AUTH) ---
         // Se não foi autenticado como ADM (ou a senha do ADM estava errada),
         // tenta autenticar como cliente usando o sistema de autenticação do Supabase.
-        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-            email: email,
-            password: senha,
-        });
+        const { data: cliente, error: errorCliente } = await supabase
+        .from('clientes')
+        .select('*')
+        .eq('email_cliente', email)
+        .single();
 
-        if (authError) {
-            console.error("Erro na autenticação de cliente pelo Supabase Auth:", authError);
-            // Mensagens de erro mais amigáveis para o frontend
-            if (authError.message.includes('Invalid login credentials') || authError.status === 400) {
-                // Para segurança, uma mensagem genérica é melhor para o usuário final
-                return res.status(401).json({ error: 'Email ou senha incorretos.' });
+    if (errorCliente && errorCliente.code !== 'PGRST116') { // PGRST116 é "no rows found"
+        console.error("Erro ao buscar cliente na tabela 'clientes':", errorCliente);
+        return res.status(500).json({ error: 'Erro interno ao buscar cliente.' });
+    }
+
+    if (cliente) {
+        console.log("Dados do cliente encontrado na tabela 'clientes':", cliente);
+        if (cliente.senha_cliente) {
+            const senhaValidaCliente = await bcrypt.compare(senha, cliente.senha_cliente);
+            if (senhaValidaCliente) {
+                console.log("Senha do cliente VÁLIDA - Login CLIENTE bem-sucedido (via bcrypt)!");
+                return res.status(200).json({
+                    success: true,
+                    message: 'Login de cliente bem-sucedido',
+                    userType: 'cliente',
+                    // Você não terá uma sessão do Supabase Auth aqui,
+                    // precisaria gerar seu próprio token ou ID de sessão.
+                });
+            } else {
+                console.log("Senha do cliente inválida.");
             }
-            return res.status(500).json({ error: 'Erro interno no servidor durante autenticação de cliente.' });
+        } else {
+            console.log("Cliente encontrado, mas sem senha hash na tabela 'clientes'.");
         }
+    } else {
+        console.log("Cliente não encontrado na tabela 'clientes' para este email.");
+    }
 
-        // Se a autenticação de cliente via Supabase Auth foi bem-sucedida
-        if (authData.user && authData.session) {
-            console.log("Login de cliente bem-sucedido pelo Supabase Auth. Usuário:", authData.user.email);
-
-            // Retorna a sessão completa do Supabase para o frontend
-            return res.status(200).json({
-                success: true,
-                message: 'Login de cliente bem-sucedido',
-                userType: 'cliente', // Indica que é um cliente
-                session: authData.session // Envia o objeto de sessão do Supabase para o frontend
-            });
-        }
-
-        // Se chegou até aqui, significa que o e-mail não foi encontrado como ADM,
-        // nem foi autenticado como cliente pelo Supabase Auth (e nenhum erro foi retornado).
-        // Isso cobriria casos onde o Supabase Auth não retorna erro mas também não retorna user/session (improvável).
-        return res.status(401).json({ error: 'Email ou senha inválidos.' });
+    // Se chegou até aqui, nem ADM nem Cliente foram autenticados.
+    return res.status(401).json({ error: 'Email ou senha incorretos.' });
 
     } catch (error) {
         console.error('Erro geral no login (catch principal):', error);
