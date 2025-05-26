@@ -221,42 +221,50 @@ app.post('/loginC', async (req, res) => {
         // --- 2. TENTATIVA DE LOGIN COMO CLIENTE (USANDO SUPABASE AUTH) ---
         // Se não foi autenticado como ADM (ou a senha do ADM estava errada),
         // tenta autenticar como cliente usando o sistema de autenticação do Supabase.
-        const { data: cliente, error: errorCliente } = await supabase
-        .from('clientes')
-        .select('*')
-        .eq('email_cliente', email)
-        .single();
+        const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+            email: email,
+            password: senha,
+        });
 
-    if (errorCliente && errorCliente.code !== 'PGRST116') { // PGRST116 é "no rows found"
-        console.error("Erro ao buscar cliente na tabela 'clientes':", errorCliente);
-        return res.status(500).json({ error: 'Erro interno ao buscar cliente.' });
-    }
-
-    if (cliente) {
-        console.log("Dados do cliente encontrado na tabela 'clientes':", cliente);
-        if (cliente.senha_cliente) {
-            const senhaValidaCliente = await bcrypt.compare(senha, cliente.senha_cliente);
-            if (senhaValidaCliente) {
-                console.log("Senha do cliente VÁLIDA - Login CLIENTE bem-sucedido (via bcrypt)!");
-                return res.status(200).json({
-                    success: true,
-                    message: 'Login de cliente bem-sucedido',
-                    userType: 'cliente',
-                    // Você não terá uma sessão do Supabase Auth aqui,
-                    // precisaria gerar seu próprio token ou ID de sessão.
-                });
-            } else {
-                console.log("Senha do cliente inválida.");
+        if (authError) {
+            console.error("Erro no login do cliente via Supabase Auth:", authError.message);
+            // Verifica se o erro é de credenciais inválidas
+            if (authError.message.includes('Invalid login credentials') || authError.message.includes('Email not confirmed')) {
+                return res.status(401).json({ success: false, error: 'Email ou senha incorretos, ou email não confirmado.' });
             }
-        } else {
-            console.log("Cliente encontrado, mas sem senha hash na tabela 'clientes'.");
+            return res.status(500).json({ success: false, error: 'Erro no serviço de autenticação do cliente.' });
         }
-    } else {
-        console.log("Cliente não encontrado na tabela 'clientes' para este email.");
-    }
 
-    // Se chegou até aqui, nem ADM nem Cliente foram autenticados.
-    return res.status(401).json({ error: 'Email ou senha incorretos.' });
+        // Se a autenticação Supabase foi bem-sucedida para o cliente
+        if (authData && authData.session && authData.user) {
+            console.log("Login CLIENTE bem-sucedido via Supabase Auth!");
+            console.log("Sessão do Supabase:", authData.session);
+            console.log("Usuário do Supabase:", authData.user);
+
+            // Opcional: Você pode querer verificar se este usuário também existe na sua tabela 'clientes'
+            // se houver dados adicionais do cliente que você armazena lá.
+            // const { data: clienteDB, error: errorClienteDB } = await supabase
+            //     .from('clientes')
+            //     .select('*')
+            //     .eq('email_cliente', authData.user.email)
+            //     .single();
+
+            // if (errorClienteDB) {
+            //     console.warn("Usuário autenticado no Supabase Auth, mas não encontrado na tabela 'clientes'.");
+            //     // Decida como lidar com isso: pode permitir o login, ou exigir que esteja na tabela.
+            // }
+
+            return res.status(200).json({
+                success: true,
+                message: 'Login de cliente bem-sucedido',
+                userType: 'cliente',
+                session: authData.session // Envia o objeto de sessão do Supabase para o frontend
+            });
+        }
+
+        // Se chegou até aqui, significa que não foi ADM nem Cliente autenticado via Supabase Auth
+        // (por exemplo, se authData.session ou authData.user não vierem, o que é incomum em sucesso)
+        return res.status(401).json({ error: 'Email ou senha incorretos.' });
 
     } catch (error) {
         console.error('Erro geral no login (catch principal):', error);
@@ -280,30 +288,75 @@ app.post('/clientes', async (req, res) => {
         email_cliente,
         telefone_cliente,
         região_cliente,
-        senha_cliente
+        senha_cliente // A senha virá em texto puro do frontend
     } = req.body;
 
+    // Adicione validações básicas para os campos
+    if (!email_cliente || !senha_cliente || !nome_cliente) {
+        return res.status(400).json({ error: 'Email, senha e nome são campos obrigatórios.' });
+    }
+
     try {
-        const senhaHash = await bcrypt.hash(senha_cliente, 10);
+        // --- 1. Registrar o usuário no sistema de AUTENTICAÇÃO do Supabase ---
+        // O Supabase Auth vai lidar com o hashing da senha automaticamente.
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+            email: email_cliente,
+            password: senha_cliente,
+            options: {
+                data: {
+                    // Opcional: Você pode passar metadados adicionais para o usuário do Supabase Auth
+                    // Mas para dados que serão consultados frequentemente, é melhor armazenar na sua tabela 'clientes'.
+                    nome_cliente_auth: nome_cliente // Exemplo: para fins de registro no Auth
+                }
+            }
+        });
 
-        const { data, error } = await supabase
-            .from('clientes')
-            .insert([{
-                nome_cliente,
-                email_cliente,
-                telefone_cliente,
-                região_cliente,
-                senha_cliente: senhaHash
-            }])
-            .select(); // Adicione o .select() para retornar os dados inseridos
-
-        if (error) {
-            return res.status(500).json({ error: error.message });
+        if (authError) {
+            console.error('Erro ao cadastrar cliente no Supabase Auth:', authError.message);
+            // Tratar erros comuns de cadastro, como email já cadastrado
+            if (authError.message.includes('User already registered')) {
+                return res.status(409).json({ error: 'Este e-mail já está cadastrado. Por favor, tente outro ou faça login.' });
+            }
+            return res.status(500).json({ error: `Erro ao cadastrar usuário: ${authError.message}` });
         }
 
-        res.status(201).json({ message: 'Cliente cadastrado com sucesso', data: data ? data[0] : null }); // Retorne os dados
+        // --- 2. Inserir dados adicionais na sua tabela 'clientes' ---
+        // Usamos o ID do usuário gerado pelo Supabase Auth para linkar.
+        // Não armazenamos a senha aqui, pois ela é gerenciada pelo Supabase Auth.
+        const { data: newClientData, error: insertError } = await supabase
+            .from('clientes')
+            .insert([{
+                id_cliente: authData.user.id, // MUITO IMPORTANTE: Usar o ID do usuário do Supabase Auth
+                nome_cliente: nome_cliente,
+                email_cliente: email_cliente, // Pode duplicar, mas é bom para consultas rápidas na tabela
+                telefone_cliente: telefone_cliente,
+                região_cliente: região_cliente,
+                // Remova 'senha_cliente' daqui! A senha é gerenciada pelo Supabase Auth.
+            }])
+            .select();
+
+        if (insertError) {
+            console.error('Erro ao salvar dados adicionais na tabela clientes:', insertError.message);
+            // Considere o que fazer aqui:
+            // 1. Você pode querer apagar o usuário recém-criado no Supabase Auth se a inserção na tabela falhar,
+            //    para evitar usuários "órfãos". Isso é mais complexo e requer lógica de reversão.
+            //    await supabase.auth.admin.deleteUser(authData.user.id); // Requer chave de serviço (service_role key)
+            // 2. Ou simplesmente informar ao usuário que houve um problema e ele pode tentar novamente.
+            return res.status(500).json({ error: 'Erro ao salvar dados adicionais do cliente. Por favor, tente novamente.' });
+        }
+
+        // --- 3. Sucesso no Cadastro ---
+        // Se o e-mail de confirmação estiver ativado no Supabase, o usuário precisará confirmá-lo.
+        let successMessage = 'Cliente cadastrado com sucesso!';
+        if (authData.user && !authData.user.confirmed_at) { // Ou verifique se require_email_confirmation está ativo
+             successMessage += ' Por favor, verifique seu e-mail para confirmar a conta.';
+        }
+
+        res.status(201).json({ success: true, message: successMessage, user: authData.user, profile: newClientData ? newClientData[0] : null });
+
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        console.error('Erro geral no cadastro de cliente:', error);
+        res.status(500).json({ error: 'Erro interno no servidor.' });
     }
 });
 
