@@ -1,8 +1,16 @@
 // FrontEnd/Views/Login_cliente/LogC.js
 
-// Não precisamos mais das definições de SUPABASE_URL, SUPABASE_ANON_KEY e createClient aqui.
-// A instância 'supabase' será fornecida globalmente por 'FrontEnd/Views/js/supabaseClient.js'.
-// (Certifique-se de que 'supabaseClient.js' é carregado antes deste no HTML!)
+// Importa createClient diretamente do pacote Supabase JS via CDN como um módulo ES6
+// O '+esm' no final da URL é CRUCIAL para que o navegador a trate como um módulo.
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://mxhwmpouoajvidghhevq.supabase.co';
+// Use a ANON_KEY real do seu painel Supabase (Project Settings -> API)
+// CUIDADO: Não use sua SERVICE_ROLE key aqui!
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im14aHdtcG91b2FqdmlkZ2hoZXZxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDE2NTI0ODEsImV4cCI6MjA1NzIyODQ4MX0.yPIQaaUTGiqz5LG6KJM43NL-8hIk6mgShsOpm8DEplM';
+
+// Cria a instância do cliente Supabase usando o createClient importado
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 document.querySelector('.btn').addEventListener('click', async (event) => {
     event.preventDefault();
@@ -24,24 +32,22 @@ document.querySelector('.btn').addEventListener('click', async (event) => {
         if (response.ok && data.success) {
             if (data.userType === 'admin') {
                 console.log('Login bem-sucedido para ADM - Redirecionando para adm.html');
-                // Caminho relativo de LogC.js (em Login_cliente) para adm.html (em adm)
                 window.location.href = '/adm';
             } else if (data.userType === 'cliente') {
                 console.log('Login bem-sucedido para Cliente - Armazenando sessão e redirecionando para home.html');
 
                 if (data.session) {
-                    // Usa a instância global 'supabase' (do supabaseClient.js) para setar a sessão.
+                    // Agora 'supabase' é a instância importada e está disponível
                     await supabase.auth.setSession(data.session);
                     console.log("Sessão do Supabase setada no frontend com sucesso.");
                 } else {
                     console.warn("Login de cliente bem-sucedido, mas o objeto de sessão do Supabase não foi retornado pelo backend.");
                 }
-                // Caminho relativo de LogC.js (em Login_cliente) para home.html (em Home)
-                window.location.href = '/';
+                window.location.href = '/'; // Redireciona APÓS setar a sessão (ou a falta dela)
             } else {
                 console.warn('Tipo de usuário desconhecido retornado pelo servidor:', data.userType);
                 alert('Login bem-sucedido, mas o tipo de usuário é desconhecido. Por favor, tente novamente.');
-                window.location.href = '/'; // Volta para a própria página de login
+                window.location.href = '/';
             }
         } else {
             alert(`Erro no login: ${data.error || data.message || 'Ocorreu um erro desconhecido ao tentar fazer login.'}`);
