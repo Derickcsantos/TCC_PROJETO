@@ -43,7 +43,7 @@ document.querySelector('.btn').addEventListener('click', async (event) => {
                 } else {
                     console.warn("Login de cliente bem-sucedido, mas o objeto de sessão do Supabase não foi retornado pelo backend.");
                 }
-                window.location.href = '/'; // Redireciona APÓS setar a sessão (ou a falta dela)
+                window.location.href = '/logadoC'; // Redireciona APÓS setar a sessão (ou a falta dela)
             } else {
                 console.warn('Tipo de usuário desconhecido retornado pelo servidor:', data.userType);
                 alert('Login bem-sucedido, mas o tipo de usuário é desconhecido. Por favor, tente novamente.');
