@@ -11,6 +11,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '../../FrontEnd')));
 
 
+// Rota para cliente logado
+app.get('/logadoC', async (req, res) =>{
+    const filePath = path.join(__dirname, '../../FrontEnd/Views/cliente_logado/logadoC.html')
+    res.sendFile(filePath)
+});
+
+
+
 // Rota para obter a contagem de clientes
 app.get('/api/clientes/count', async (req, res) => {
     try {
