@@ -18,8 +18,7 @@
                 <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="#clientes"><i class="fas fa-users"></i> Clientes</a></li>
                 <li><a href="#saloes"><i class="fas fa-store"></i> Salões</a></li>
-                <li><a href="#usuarios"><i class="fas fa-user-cog"></i> Usuários</a></li>
-                <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
+                <li><a href="#usuarios"><i class="fas fa-user-cog"></i> Usuários</a></li> <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
                 <li><a href="#sair"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
             </ul>
         </div>
@@ -60,7 +59,7 @@
                     <div class="stat-card">
                         <div class="stat-icon bg-warning">
                             <i class="fas fa-user-cog"></i>
-                        </div>
+                            </div>
                         <div class="stat-info">
                             <h3 id="usuarios-count">0</h3>
                             <p>Usuários</p>
@@ -95,7 +94,6 @@
                 </div>
             </div>
             
-
             <div class="modal fade" id="clienteModal" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -122,7 +120,7 @@
                                     <label for="regiao" class="form-label">Região</label>
                                     <input type="text" class="form-control" id="regiao">
                                 </div>
-                                 <div class="mb-3">
+                                <div class="mb-3">
                                     <label for="senha" class="form-label">Senha</label>
                                     <input type="password" class="form-control" id="senha">
                                     <small class="text-muted">Deixe em branco para não alterar.</small>
@@ -136,7 +134,7 @@
                     </div>
                 </div>
             </div>
-             <div class="content-section" id="saloes-content" style="display: none">
+            <div class="content-section" id="saloes-content" style="display: none">
                 <div class="section-header">
                     <h2>Gerenciamento de Salões</h2>
                     <button
@@ -161,7 +159,7 @@
                     </table>
                 </div>
             </div>
-             <div
+            <div
                 class="modal fade"
                 id="salaoModal"
                 tabindex="-1"
@@ -227,8 +225,80 @@
                     </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="content-section" id="usuarios-content" style="display: none;">
+                <div class="section-header">
+                    <h2>Gerenciamento de Usuários Donos</h2>
+                    <button class="btn btn-info" id="add-usuario-btn" data-bs-toggle="modal" data-bs-target="#usuarioModal">
+                        <i class="fas fa-plus"></i> Adicionar Usuário Dono
+                    </button>
                 </div>
-        </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Usuário</th>
+                                <th>CPF</th>
+                                <th>Telefone</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usuarios-table-body">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal fade" id="usuarioModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="usuarioModalTitle">Adicionar Usuário Dono</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="usuarioForm">
+                                <input type="hidden" id="usuarioId">
+                                <div class="mb-3">
+                                    <label for="nomeDono" class="form-label">Nome Completo</label>
+                                    <input type="text" class="form-control" id="nomeDono" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="emailDono" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="emailDono" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="usuarioDono" class="form-label">Nome de Usuário</label>
+                                    <input type="text" class="form-control" id="usuarioDono" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="cpfDono" class="form-label">CPF</label>
+                                    <input type="text" class="form-control" id="cpfDono" required maxlength="14" onkeypress="formatarCPF(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="telefoneDono" class="form-label">Telefone</label>
+                                    <input type="text" class="form-control" id="telefoneDono" maxlength="15" onkeypress="formatarTelefone(this)">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="senhaDono" class="form-label">Senha</label>
+                                    <input type="password" class="form-control" id="senhaDono">
+                                    <small class="text-muted" id="senhaDonoHelp">Deixe em branco para não alterar a senha.</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="button" class="btn btn-primary" id="saveUsuarioBtn">Salvar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
