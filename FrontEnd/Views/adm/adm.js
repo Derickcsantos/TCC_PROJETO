@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
     const dashboardContent = document.getElementById('dashboard-content');
     const clientesContent = document.getElementById('clientes-content');
+    const saloesContentEl = document.getElementById('saloes-content');
+    // Adicionando referência para o novo conteúdo de usuários
+    const usuariosContent = document.getElementById('usuarios-content'); 
+
     const clientesLink = document.querySelector('.sidebar-menu a[href="#clientes"]').parentElement;
+    const saloesLink = document.querySelector('.sidebar-menu a[href="#saloes"]').parentElement;
+    // Adicionando referência para o link da sidebar de usuários
+    const usuariosLink = document.querySelector('.sidebar-menu a[href="#usuarios"]').parentElement;
+
     const clientesTableBody = document.getElementById('clientes-table-body');
     const addClienteBtn = document.getElementById('add-cliente-btn');
     const clienteModalEl = document.getElementById('clienteModal');
@@ -9,15 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const clienteForm = document.getElementById('clienteForm');
     const clienteIdInput = document.getElementById('clienteId');
     const saveClienteBtn = document.getElementById('saveClienteBtn');
-    let clienteModal; // Declaração do modal no escopo correto
+    let clienteModal; 
 
     const clientesCountSpan = document.getElementById('clientes-count');
     const saloesCountSpan = document.getElementById('saloes-count');
     const usuariosCountSpan = document.getElementById('usuarios-count');
 
     // Adicionando elementos para Salões
-    const saloesContentEl = document.getElementById('saloes-content');
-    const saloesLink = document.querySelector('.sidebar-menu a[href="#saloes"]').parentElement;
     const saloesTableBody = document.getElementById('saloes-table-body');
     const addSalaoBtn = document.getElementById('add-salao-btn');
     const salaoModalEl = document.getElementById('salaoModal');
@@ -26,6 +32,45 @@ document.addEventListener('DOMContentLoaded', () => {
     const salaoIdInput = document.getElementById('salaoId');
     const saveSalaoBtn = document.getElementById('saveSalaoBtn');
     let salaoModal;
+
+    // NOVOS ELEMENTOS PARA USUÁRIOS DONOS
+    const usuariosTableBody = document.getElementById('usuarios-table-body');
+    const addUsuarioBtn = document.getElementById('add-usuario-btn');
+    const usuarioModalEl = document.getElementById('usuarioModal');
+    const usuarioModalTitle = document.getElementById('usuarioModalTitle');
+    const usuarioForm = document.getElementById('usuarioForm');
+    const usuarioIdInput = document.getElementById('usuarioId');
+    const saveUsuarioBtn = document.getElementById('saveUsuarioBtn');
+    let usuarioModal; // Declaração do modal de usuário
+
+    // Funções de Formatação (Recomendado adicionar ao final do arquivo ou em um arquivo utils.js)
+    function formatarCPF(campo) {
+        let cpf = campo.value.replace(/\D/g, ""); // Remove tudo que não é dígito
+        if (cpf.length > 9) {
+            cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+            cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        } else if (cpf.length > 6) {
+            cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+            cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+        } else if (cpf.length > 3) {
+            cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+        }
+        campo.value = cpf;
+    }
+
+    function formatarTelefone(campo) {
+        let telefone = campo.value.replace(/\D/g, ""); // Remove tudo que não é dígito
+        if (telefone.length > 10) {
+            telefone = telefone.replace(/^(\d\d)(\d{5})(\d{4}).*/, "($1) $2-$3");
+        } else if (telefone.length > 5) {
+            telefone = telefone.replace(/^(\d\d)(\d{4})(\d{0,4}).*/, "($1) $2-$3");
+        } else if (telefone.length > 2) {
+            telefone = telefone.replace(/^(\d\d)(\d{0,5})/, "($1) $2");
+        }
+        campo.value = telefone;
+    }
+    // FIM DAS FUNÇÕES DE FORMATAÇÃO
 
     async function adicionarCliente() {
         const nome_cliente = document.getElementById("nome").value;
@@ -36,20 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Validação básica dos campos
         if (!nome_cliente || !email_cliente || !telefone_cliente || !regiao_cliente || !senha_cliente) {
-            alert("Por favor, preencha todos os campos!");
-            return; // Impede o envio se algum campo estiver vazio
+            Swal.fire('Atenção!', 'Por favor, preencha todos os campos obrigatórios!', 'warning');
+            return; 
         }
 
         const clienteData = {
             nome_cliente,
             email_cliente,
             telefone_cliente,
-            região_cliente,
+            região_cliente, // Correção de digitação aqui: região_cliente
             senha_cliente,
         };
 
         try {
-            const response = await fetch("/api/clientes", { // Use a rota /api/clientes
+            const response = await fetch("/api/clientes", { 
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -62,22 +107,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Erro ao cadastrar cliente: ${response.status} - ${errorText}`);
             }
 
-            const responseData = await response.json(); // Obtém os dados da resposta
+            const responseData = await response.json(); 
 
-            alert(responseData.message); // Exibe mensagem de sucesso
+            Swal.fire('Sucesso!', responseData.message, 'success');
 
-            // Limpa o formulário após o sucesso
             document.getElementById("nome").value = "";
             document.getElementById("email").value = "";
             document.getElementById("telefone").value = "";
             document.getElementById("regiao").value = "";
             document.getElementById("senha").value = "";
 
-            // Atualiza a página ou redireciona, se necessário
-            // window.location.href = '/lista_clientes.html'; // Exemplo de redirecionamento
+            fetchClientes(); // Atualiza a lista
+            fetchCounts(); // Atualiza as contagens
+            clienteModal.hide(); // Fecha o modal
         } catch (error) {
             console.error("Erro:", error);
-            alert("Erro ao cadastrar cliente. Verifique o console para mais detalhes.");
+            Swal.fire('Erro!', 'Erro ao cadastrar cliente. Verifique o console para mais detalhes.', 'error');
         }
     }
 
@@ -91,13 +136,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const saloesData = await saloesResponse.json();
             saloesCountSpan.textContent = saloesData.count;
 
-            const usuariosResponse = await fetch('/api/usuarios/count');
+            // NOVA REQUISIÇÃO PARA CONTAGEM DE USUÁRIOS
+            const usuariosResponse = await fetch('/api/usuarios/count'); 
             const usuariosData = await usuariosResponse.json();
             usuariosCountSpan.textContent = usuariosData.count;
 
         } catch (error) {
             console.error('Erro ao buscar contagens:', error);
-            // Lógica para exibir uma mensagem de erro no dashboard, se necessário
         }
     }
 
@@ -112,20 +157,19 @@ document.addEventListener('DOMContentLoaded', () => {
             displayClientes(clientes);
         } catch (error) {
             console.error('Erro ao buscar clientes:', error);
-            // Exibir mensagem de erro na tela, se necessário
         }
     }
 
     // Função para exibir os clientes na tabela
     function displayClientes(clientes) {
-        clientesTableBody.innerHTML = ''; // Limpa a tabela
+        clientesTableBody.innerHTML = ''; 
         clientes.forEach(cliente => {
             const row = clientesTableBody.insertRow();
             row.insertCell().textContent = cliente.id_cliente;
             row.insertCell().textContent = cliente.nome_cliente;
             row.insertCell().textContent = cliente.email_cliente;
             row.insertCell().textContent = cliente.telefone_cliente || '';
-            row.insertCell().textContent = cliente.região_cliente || '';
+            row.insertCell().textContent = cliente.região_cliente || ''; // Correção de digitação aqui: região_cliente
             row.insertCell().textContent = new Date(cliente.data_cadastro).toLocaleDateString();
             const actionsCell = row.insertCell();
             actionsCell.innerHTML = `
@@ -134,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
         });
 
-        // Adiciona event listeners aos botões de editar e deletar após a tabela ser carregada
         addEventListenersToActions();
     }
 
@@ -152,9 +195,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', async () => {
                 const clienteId = button.dataset.id;
-                if (confirm('Tem certeza que deseja deletar este cliente?')) {
-                    await deleteCliente(clienteId);
-                }
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Você não poderá reverter isso!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, deletar!',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await deleteCliente(clienteId);
+                    }
+                });
             });
         });
     }
@@ -169,7 +223,6 @@ document.addEventListener('DOMContentLoaded', () => {
             populateClienteForm(cliente);
         } catch (error) {
             console.error('Erro ao buscar detalhes do cliente:', error);
-            // Exibir mensagem de erro
         }
     }
 
@@ -178,26 +231,30 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('email').value = cliente.email_cliente;
         document.getElementById('telefone').value = cliente.telefone_cliente || '';
         document.getElementById('regiao').value = cliente.região_cliente || '';
-        document.getElementById('senha').value = ''; // Não preenche a senha para edição
+        document.getElementById('senha').value = ''; 
     }
 
     async function deleteCliente(id) {
         try {
             const response = await fetch(`/api/clientes/${id}`, { method: 'DELETE' });
             if (!response.ok) {
-                throw new Error(`Erro HTTP! Status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Erro HTTP! Status: ${response.status}`);
             }
             Swal.fire('Sucesso!', 'Cliente deletado com sucesso.', 'success');
-            await fetchClientes(); // Recarrega a lista de clientes
+            await fetchClientes(); 
+            fetchCounts(); // Atualiza as contagens
         } catch (error) {
             console.error('Erro ao deletar cliente:', error);
-            Swal.fire('Erro!', 'Erro ao deletar o cliente.', 'error');
+            Swal.fire('Erro!', error.message || 'Erro ao deletar o cliente.', 'error');
         }
     }
 
-    // Inicializa o modal do Bootstrap
+    // Inicializa os modais do Bootstrap
     clienteModal = new bootstrap.Modal(clienteModalEl);
     salaoModal = new bootstrap.Modal(salaoModalEl);
+    // Inicializa o modal de usuário
+    usuarioModal = new bootstrap.Modal(usuarioModalEl);
 
     // Event listener para mostrar a seção de clientes ao clicar no link da sidebar
     clientesLink.addEventListener('click', (e) => {
@@ -205,7 +262,8 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardContent.style.display = 'none';
         clientesContent.style.display = 'block';
         saloesContentEl.style.display = 'none';
-        fetchClientes(); // Carrega a lista de clientes ao exibir a seção
+        usuariosContent.style.display = 'none'; // Oculta a seção de usuários
+        fetchClientes(); 
     });
 
     saloesLink.addEventListener('click', (e) => {
@@ -213,22 +271,32 @@ document.addEventListener('DOMContentLoaded', () => {
         dashboardContent.style.display = 'none';
         clientesContent.style.display = 'none';
         saloesContentEl.style.display = 'block';
+        usuariosContent.style.display = 'none'; // Oculta a seção de usuários
         fetchSaloes();
     });
+
+    // NOVO Event listener para mostrar a seção de usuários ao clicar no link da sidebar
+    usuariosLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        dashboardContent.style.display = 'none';
+        clientesContent.style.display = 'none';
+        saloesContentEl.style.display = 'none';
+        usuariosContent.style.display = 'block'; // Mostra a seção de usuários
+        fetchUsuarios(); // Carrega a lista de usuários ao exibir a seção
+    });
+
 
     // Lógica para o botão "Adicionar Cliente" abrir o modal
     addClienteBtn.addEventListener('click', () => {
         modalTitle.textContent = 'Adicionar Cliente';
         clienteForm.reset();
         clienteIdInput.value = ''; // Limpa o ID para adicionar um novo cliente
+        document.getElementById('senha').setAttribute('required', 'required'); // Torna a senha obrigatória ao adicionar
+        document.getElementById('senhaDonoHelp').style.display = 'none'; // Esconde a dica de "deixar em branco"
         clienteModal.show();
     });
 
-    addSalaoBtn.addEventListener('click', () => {
-        window.location.href = 'http://localhost:3000/cadastro_usuario'
-    });
-
-    // Event listener para o botão "Salvar" no modal (Adicionar/Editar)
+    // Ajuste para o botão "Salvar" no modal de cliente
     saveClienteBtn.addEventListener('click', async () => {
         const nome = document.getElementById('nome').value;
         const email = document.getElementById('email').value;
@@ -238,13 +306,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const idCliente = clienteIdInput.value;
         const isEdit = idCliente !== '';
 
+        if (!nome || !email || !telefone || !regiao || (!isEdit && !senha)) { // Validação para campos obrigatórios, incluindo senha para adição
+            Swal.fire('Atenção!', 'Por favor, preencha todos os campos obrigatórios!', 'warning');
+            return;
+        }
+
         const clienteData = {
             nome_cliente: nome,
             email_cliente: email,
             telefone_cliente: telefone,
             região_cliente: regiao,
-            ...(senha && { senha_cliente: senha }) // Adiciona a senha apenas se estiver preenchida
         };
+        // Adiciona a senha apenas se estiver preenchida OU se for uma nova adição
+        if (senha || !isEdit) {
+            clienteData.senha_cliente = senha;
+        }
+
 
         const url = isEdit ? `/api/clientes/${idCliente}` : '/api/clientes';
         const method = isEdit ? 'PUT' : 'POST';
@@ -266,7 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             Swal.fire('Sucesso!', `Cliente ${isEdit ? 'atualizado' : 'adicionado'} com sucesso.`, 'success');
             clienteModal.hide();
-            await fetchClientes(); // Recarrega a lista de clientes
+            await fetchClientes(); 
+            fetchCounts(); // Atualiza as contagens
         } catch (error) {
             console.error('Erro ao salvar/atualizar cliente:', error);
             Swal.fire('Erro!', 'Erro interno ao salvar o cliente.', 'error');
@@ -319,9 +397,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.delete-salao-btn').forEach(button => {
             button.addEventListener('click', async () => {
                 const salaoId = button.dataset.id;
-                if (confirm('Tem certeza que deseja deletar este salão?')) {
-                    await deleteSalao(salaoId);
-                }
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Você não poderá reverter isso!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, deletar!',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await deleteSalao(salaoId);
+                    }
+                });
             });
         });
     }
@@ -351,13 +440,15 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch(`/api/saloes/${id}`, { method: 'DELETE' });
             if (!response.ok) {
-                throw new Error(`Erro HTTP! Status: ${response.status}`);
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Erro HTTP! Status: ${response.status}`);
             }
             Swal.fire('Sucesso!', 'Salão deletado com sucesso.', 'success');
             await fetchSaloes();
+            fetchCounts(); // Atualiza as contagens
         } catch (error) {
             console.error('Erro ao deletar salão:', error);
-            Swal.fire('Erro!', 'Erro ao deletar o salão.', 'error');
+            Swal.fire('Erro!', error.message || 'Erro ao deletar o salão.', 'error');
         }
     }
 
@@ -368,10 +459,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const idSalao = salaoIdInput.value;
         const isEdit = idSalao !== '';
 
+        if (!nomeSalao || !enderecoSalao || !telefoneSalao) {
+            Swal.fire('Atenção!', 'Por favor, preencha todos os campos obrigatórios!', 'warning');
+            return;
+        }
+
         const salaoData = {
-            nome_salao: nomeSalao, // Mantido igual
-            endereco: enderecoSalao, // Mantido igual
-            telefone: telefoneSalao, // Mantido igual
+            nome_salao: nomeSalao,
+            endereco: enderecoSalao,
+            telefone: telefoneSalaa,
         };
 
         const url = isEdit ? `/api/saloes/${idSalao}` : '/api/saloes';
@@ -395,16 +491,213 @@ document.addEventListener('DOMContentLoaded', () => {
             Swal.fire('Sucesso!', `Salão ${isEdit ? 'atualizado' : 'adicionado'} com sucesso.`, 'success');
             salaoModal.hide();
             await fetchSaloes();
+            fetchCounts(); // Atualiza as contagens
         } catch (error) {
             console.error('Erro ao salvar/atualizar salão:', error);
             Swal.fire('Erro!', 'Erro interno ao salvar o salão.', 'error');
         }
     });
 
-    // Inicialmente, exibe o dashboard e oculta a seção de clientes
+    // Lógica para o botão "Adicionar Salão" (o link para '/cadastro_usuario' foi removido para ser substituído pela modal)
+    addSalaoBtn.addEventListener('click', () => {
+        salaoModalTitle.textContent = 'Adicionar Salão';
+        salaoForm.reset();
+        salaoIdInput.value = ''; // Limpa o ID para adicionar um novo salão
+        salaoModal.show();
+    });
+
+    // ##########################################################################
+    // NOVAS FUNÇÕES PARA O GERENCIAMENTO DE USUÁRIOS DONOS (USUARIO_DONO)
+    // ##########################################################################
+
+    // Função para buscar e exibir a lista de usuários donos
+    async function fetchUsuarios() {
+        try {
+            const response = await fetch('/api/usuarios'); // Nova rota para usuários donos
+            if (!response.ok) {
+                throw new Error(`Erro HTTP! Status: ${response.status}`);
+            }
+            const usuarios = await response.json();
+            displayUsuarios(usuarios);
+        } catch (error) {
+            console.error('Erro ao buscar usuários donos:', error);
+            Swal.fire('Erro!', 'Não foi possível carregar a lista de usuários donos.', 'error');
+        }
+    }
+
+    // Função para exibir os usuários donos na tabela
+    function displayUsuarios(usuarios) {
+        usuariosTableBody.innerHTML = ''; // Limpa a tabela
+        usuarios.forEach(usuario => {
+            const row = usuariosTableBody.insertRow();
+            row.insertCell().textContent = usuario.id_dono;
+            row.insertCell().textContent = usuario.nome_dono;
+            row.insertCell().textContent = usuario.email_dono;
+            row.insertCell().textContent = usuario.usuario;
+            row.insertCell().textContent = usuario.CPF;
+            row.insertCell().textContent = usuario.telefone_dono;
+            const actionsCell = row.insertCell();
+            actionsCell.innerHTML = `
+                <button class="btn btn-sm btn-primary edit-usuario-btn" data-id="${usuario.id_usuario}"><i class="fas fa-edit"></i> Editar</button>
+                <button class="btn btn-sm btn-danger delete-usuario-btn" data-id="${usuario.id_usuario}"><i class="fas fa-trash-alt"></i> Deletar</button>
+            `;
+        });
+        addEventListenersToUsuarioActions();
+    }
+
+    // Adiciona event listeners aos botões de editar e deletar usuários
+    function addEventListenersToUsuarioActions() {
+        document.querySelectorAll('.edit-usuario-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const usuarioId = button.dataset.id;
+                usuarioModalTitle.textContent = 'Editar Usuário Dono';
+                usuarioIdInput.value = usuarioId;
+                await fetchUsuarioDetails(usuarioId);
+                // Torna a senha não obrigatória na edição e mostra a dica
+                document.getElementById('senhaDono').removeAttribute('required');
+                document.getElementById('senhaDonoHelp').style.display = 'block'; 
+                usuarioModal.show();
+            });
+        });
+
+        document.querySelectorAll('.delete-usuario-btn').forEach(button => {
+            button.addEventListener('click', async () => {
+                const usuarioId = button.dataset.id;
+                Swal.fire({
+                    title: 'Tem certeza?',
+                    text: "Você não poderá reverter isso!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sim, deletar!',
+                    cancelButtonText: 'Cancelar'
+                }).then(async (result) => {
+                    if (result.isConfirmed) {
+                        await deleteUsuario(usuarioId);
+                    }
+                });
+            });
+        });
+    }
+
+    // Busca os detalhes de um usuário dono para edição
+    async function fetchUsuarioDetails(id) {
+        try {
+            const response = await fetch(`/api/usuarios/${id}`); // Nova rota para detalhes de usuário
+            if (!response.ok) {
+                throw new Error(`Erro HTTP! Status: ${response.status}`);
+            }
+            const usuario = await response.json();
+            populateUsuarioForm(usuario);
+        } catch (error) {
+            console.error('Erro ao buscar detalhes do usuário dono:', error);
+            Swal.fire('Erro!', 'Não foi possível carregar os detalhes do usuário.', 'error');
+        }
+    }
+
+    // Preenche o formulário do modal com os dados do usuário dono
+    function populateUsuarioForm(usuario) {
+        document.getElementById('nomeDono').value = usuario.nome_dono;
+        document.getElementById('emailDono').value = usuario.email_dono;
+        document.getElementById('usuarioDono').value = usuario.usuario;
+        document.getElementById('cpfDono').value = usuario.CPF;
+        document.getElementById('telefoneDono').value = usuario.telefone_dono;
+        document.getElementById('senhaDono').value = ''; // Nunca preenche a senha
+    }
+
+    // Deleta um usuário dono
+    async function deleteUsuario(id) {
+        try {
+            const response = await fetch(`/api/usuarios/${id}`, { method: 'DELETE' }); // Nova rota DELETE
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Erro HTTP! Status: ${response.status}`);
+            }
+            Swal.fire('Sucesso!', 'Usuário dono deletado com sucesso.', 'success');
+            await fetchUsuarios(); // Recarrega a lista de usuários
+            fetchCounts(); // Atualiza as contagens
+        } catch (error) {
+            console.error('Erro ao deletar usuário dono:', error);
+            Swal.fire('Erro!', error.message || 'Erro ao deletar o usuário dono.', 'error');
+        }
+    }
+
+    // Lógica para o botão "Adicionar Usuário" abrir o modal
+    addUsuarioBtn.addEventListener('click', () => {
+        usuarioModalTitle.textContent = 'Adicionar Usuário Dono';
+        usuarioForm.reset();
+        usuarioIdInput.value = ''; // Limpa o ID para adicionar um novo usuário
+        // Torna a senha obrigatória ao adicionar e esconde a dica
+        document.getElementById('senhaDono').setAttribute('required', 'required');
+        document.getElementById('senhaDonoHelp').style.display = 'none'; 
+        usuarioModal.show();
+    });
+
+    // Event listener para o botão "Salvar" no modal de Usuário Dono (Adicionar/Editar)
+    saveUsuarioBtn.addEventListener('click', async () => {
+        const nomeCompleto = document.getElementById('nomeDono').value;
+        const email = document.getElementById('emailDono').value;
+        const nomeUsuario = document.getElementById('usuarioDono').value;
+        const cpf = document.getElementById('cpfDono').value;
+        const telefone = document.getElementById('telefoneDono').value;
+        const senha = document.getElementById('senhaDono').value;
+        const idUsuario = usuarioIdInput.value;
+        const isEdit = idUsuario !== '';
+
+        // Validação básica dos campos obrigatórios
+        if (!nomeCompleto || !email || !nomeUsuario || !cpf || (!isEdit && !senha)) {
+            Swal.fire('Atenção!', 'Por favor, preencha todos os campos obrigatórios!', 'warning');
+            return;
+        }
+
+        const usuarioData = {
+            nome_completo: nomeCompleto,
+            email: email,
+            nome_usuario: nomeUsuario,
+            cpf: cpf,
+            telefone: telefone,
+        };
+
+        // Adiciona a senha apenas se estiver preenchida OU se for uma nova adição
+        if (senha || !isEdit) {
+            usuarioData.senha_hash = senha; // Assumindo que o backend espera 'senha_hash' para a senha
+        }
+
+        const url = isEdit ? `/api/usuarios/${idUsuario}` : '/api/usuarios';
+        const method = isEdit ? 'PUT' : 'POST';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(usuarioData),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                Swal.fire('Erro!', errorData.error || `Erro ao salvar o usuário dono: ${response.status}`, 'error');
+                return;
+            }
+
+            Swal.fire('Sucesso!', `Usuário dono ${isEdit ? 'atualizado' : 'adicionado'} com sucesso.`, 'success');
+            usuarioModal.hide();
+            await fetchUsuarios(); // Recarrega a lista
+            fetchCounts(); // Atualiza as contagens
+        } catch (error) {
+            console.error('Erro ao salvar/atualizar usuário dono:', error);
+            Swal.fire('Erro!', 'Erro interno ao salvar o usuário dono.', 'error');
+        }
+    });
+
+
+    // Inicialmente, exibe o dashboard e oculta as outras seções
     dashboardContent.style.display = 'block';
     clientesContent.style.display = 'none';
     saloesContentEl.style.display = 'none';
+    usuariosContent.style.display = 'none'; // Garante que a seção de usuários começa oculta
 
     // Adiciona event listener para exibir o dashboard ao clicar no link (se necessário)
     const dashboardLink = document.querySelector('.sidebar-menu a[href="#dashboard"]').parentElement;
@@ -414,11 +707,16 @@ document.addEventListener('DOMContentLoaded', () => {
             dashboardContent.style.display = 'block';
             clientesContent.style.display = 'none';
             saloesContentEl.style.display = 'none';
+            usuariosContent.style.display = 'none'; // Oculta a seção de usuários
             // Não precisa refazer o fetch das contagens aqui, elas já foram carregadas
         });
     }
 
     fetchCounts(); // Chama a função para buscar as contagens quando a página carregar
-    fetchSaloes();
+    // fetchSaloes(); // Já está sendo chamado na exibição da seção, mas pode ser chamado aqui também se quiser carregar junto
+    // fetchClientes(); // Já está sendo chamado na exibição da seção, mas pode ser chamado aqui também se quiser carregar junto
 
+    // Torna as funções de formatação globais ou acessíveis de outra forma se você as mover
+    window.formatarCPF = formatarCPF;
+    window.formatarTelefone = formatarTelefone;
 });
