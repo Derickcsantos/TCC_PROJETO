@@ -723,6 +723,208 @@ app.delete('/api/saloes/:id', async (req, res) => {
     }
 });
 
+// Rota para obter a contagem de usuários donos
+app.get('/api/usuarios/count', async (req, res) => {
+    try {
+        const { count, error } = await supabase
+            .from('usuario_dono')
+            .select('*', { count: 'exact', head: true }); // Contagem exata
+
+        if (error) {
+            console.error('Erro ao obter contagem de usuários donos:', error);
+            return res.status(500).json({ error: 'Erro ao obter contagem de usuários donos', details: error.message });
+        }
+
+        res.json({ count: count });
+    } catch (error) {
+        console.error('Erro no servidor ao obter contagem de usuários donos:', error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para obter todos os usuários donos (READ - All)
+// A rota foi alterada de '/api/usuarios_dono' para '/api/usuarios'
+app.get('/api/usuarios', async (req, res) => {
+    try {
+        const { data, error } = await supabase
+            .from('usuario_dono')
+            .select('*');
+
+        if (error) {
+            console.error('Erro ao obter usuários donos:', error);
+            return res.status(500).json({ error: 'Erro ao obter usuários donos', details: error.message });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('Erro no servidor ao obter usuários donos:', error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para obter um usuário dono por ID (READ - Single)
+// A rota foi alterada de '/api/usuarios_dono/:id' para '/api/usuarios/:id'
+app.get('/api/usuarios/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const { data, error } = await supabase
+            .from('usuario_dono')
+            .select('*')
+            .eq('id_dono', id) // Mantém 'id_dono' como a chave primária no DB
+            .single();
+
+        if (error) {
+            console.error('Erro ao obter usuário dono por ID:', error);
+            if (error.code === 'PGRST116' || error.message.includes('rows found')) {
+                return res.status(404).json({ error: 'Usuário dono não encontrado' });
+            }
+            return res.status(500).json({ error: 'Erro ao obter usuário dono', details: error.message });
+        }
+
+        if (!data) {
+            return res.status(404).json({ error: 'Usuário dono não encontrado' });
+        }
+
+        res.json(data);
+    } catch (error) {
+        console.error('Erro no servidor ao obter usuário dono por ID:', error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para criar um novo usuário dono (CREATE)
+// A rota foi alterada de '/api/usuarios_dono' para '/api/usuarios'
+app.post('/api/usuarios', async (req, res) => {
+    // Ajuste nos nomes das variáveis para corresponder ao frontend
+    const { nome_completo, email, nome_usuario, cpf, telefone, senha_hash } = req.body;
+
+    // Validação básica dos campos obrigatórios (ajustada para os novos nomes)
+    if (!nome_completo || !email || !nome_usuario || !cpf || !telefone || !senha_hash) {
+        return res.status(400).json({ error: 'Todos os campos são obrigatórios para o cadastro de usuário dono.' });
+    }
+
+    try {
+        // Criptografa a senha antes de inserir no banco de dados
+        const senhaCriptografada = await bcrypt.hash(senha_hash, 10); // Usa senha_hash do frontend
+
+        const { data, error } = await supabase
+            .from('usuario_dono')
+            .insert([{
+                nome_completo, // Corrigido para nome_completo
+                email,         // Corrigido para email
+                senha_dono: senhaCriptografada, // Mantém o nome da coluna do DB
+                nome_usuario,  // Corrigido para nome_usuario
+                cpf,           // Corrigido para cpf
+                telefone       // Corrigido para telefone
+            }])
+            .select('*');
+
+        if (error) {
+            console.error('Erro ao criar usuário dono:', error);
+            if (error.code === '23505') {
+                let field = 'campo';
+                if (error.message.includes('email')) field = 'e-mail';
+                else if (error.message.includes('cpf')) field = 'CPF'; // Assumindo que a coluna é 'cpf' em minúsculas
+                else if (error.message.includes('nome_usuario')) field = 'nome de usuário';
+                return res.status(409).json({ error: `Este ${field} já está cadastrado.` });
+            }
+            return res.status(500).json({ error: 'Erro ao criar usuário dono', details: error.message });
+        }
+
+        if (!data || data.length === 0) {
+            return res.status(500).json({ error: 'Falha ao inserir o usuário dono' });
+        }
+
+        res.status(201).json({ message: 'Usuário dono criado com sucesso!', data: data[0] });
+    } catch (error) {
+        console.error('Erro no servidor ao criar usuário dono:', error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para atualizar um usuário dono (UPDATE)
+// A rota foi alterada de '/api/usuarios_dono/:id' para '/api/usuarios/:id'
+app.put('/api/usuarios/:id', async (req, res) => {
+    const id = req.params.id;
+    // Ajuste nos nomes das variáveis para corresponder ao frontend
+    const { nome_completo, email, nome_usuario, cpf, telefone, senha_hash } = req.body;
+
+    let updateData = {
+        nome_completo,
+        email,
+        nome_usuario,
+        cpf,
+        telefone
+    };
+
+    try {
+        // Se uma nova senha for fornecida, criptografa e adiciona aos dados de atualização
+        if (senha_hash) { // Usa senha_hash do frontend
+            updateData.senha_dono = await bcrypt.hash(senha_hash, 10); // Mantém o nome da coluna do DB
+        }
+
+        const { data, error } = await supabase
+            .from('usuario_dono')
+            .update(updateData)
+            .eq('id_dono', id) // Mantém 'id_dono' como a chave primária no DB
+            .select('*');
+
+        if (error) {
+            console.error('Erro ao atualizar usuário dono:', error);
+            if (error.code === 'PGRST116' || error.message.includes('rows found')) {
+                return res.status(404).json({ error: 'Usuário dono não encontrado para atualização' });
+            }
+            if (error.code === '23505') {
+                let field = 'campo';
+                if (error.message.includes('email')) field = 'e-mail';
+                else if (error.message.includes('cpf')) field = 'CPF'; // Assumindo que a coluna é 'cpf' em minúsculas
+                else if (error.message.includes('nome_usuario')) field = 'nome de usuário';
+                return res.status(409).json({ error: `Este ${field} já está em uso por outro usuário.` });
+            }
+            return res.status(500).json({ error: 'Erro ao atualizar usuário dono', details: error.message });
+        }
+
+        if (!data || data.length === 0) {
+            return res.status(404).json({ error: 'Usuário dono não encontrado ou nenhum dado para atualizar.' });
+        }
+
+        res.json({ message: 'Usuário dono atualizado com sucesso!', data: data[0] });
+    } catch (error) {
+        console.error('Erro no servidor ao atualizar usuário dono:', error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
+// Rota para deletar um usuário dono (DELETE)
+// A rota foi alterada de '/api/usuarios_dono/:id' para '/api/usuarios/:id'
+app.delete('/api/usuarios/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        const { data, error } = await supabase
+            .from('usuario_dono')
+            .delete()
+            .eq('id_dono', id) // Mantém 'id_dono' como a chave primária no DB
+            .select('*');
+
+        if (error) {
+            console.error('Erro ao deletar usuário dono:', error);
+            if (error.code === 'PGRST116' || error.message.includes('rows found')) {
+                return res.status(404).json({ error: 'Usuário dono não encontrado para exclusão' });
+            }
+            return res.status(500).json({ error: 'Erro ao deletar usuário dono', details: error.message });
+        }
+
+        if (!data || data.length === 0) {
+            return res.status(404).json({ error: 'Usuário dono não encontrado para exclusão.' });
+        }
+
+        res.json({ message: 'Usuário dono deletado com sucesso!', data: data[0] });
+    } catch (error) {
+        console.error('Erro no servidor ao deletar usuário dono:', error);
+        res.status(500).json({ error: 'Erro interno do servidor', details: error.message });
+    }
+});
+
 app.listen(3000, () => {
     console.log('Servidor rodando na porta 3000');
 });
