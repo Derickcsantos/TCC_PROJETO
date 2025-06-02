@@ -4,6 +4,534 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Time Cut - Agendamento para Barbearias e Salões</title>
+    <link rel="stylesheet" href="Views/Home/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="img/logo.png" alt="Logo Time Cut">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#sobre">Como Funciona</a></li>
+                <li><a href="#parceiros">Parceiros</a></li>
+                <li><a href="#galeria">Inspiração</a></li>
+                <!-- <li><a href="#servicos">Serviços</a></li> -->
+                <li><a href="#contato">Contato</a></li>
+                <li><a href="#" id="login-btn"><i class="fas fa-user"></i> Login</a></li>
+                <li><a href="#" id="partner-btn" class="partner-btn"><i class="fas fa-store"></i> Área Parceiro</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <i class="fas fa-bars"></i>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h2>Agendamento inteligente para barbearias e salões</h2>
+                <p>Encontre os melhores profissionais e agende no horário que preferir</p>
+                <div class="hero-buttons">
+                    <a href="#servicos" class="btn">Agendar Agora</a>
+                    <a href="#cadastro-business" class="btn btn-outline">Cadastrar Meu Negócio</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Como Funciona -->
+        <section id="sobre" class="about-platform">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Como Funciona</h2>
+                    <p class="section-subtitle">Conectamos você aos melhores profissionais</p>
+                </div>
+
+                <div class="platform-features">
+                    <!-- Para Clientes -->
+                    <div class="feature-card">
+                        <div class="feature-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3>Para Clientes</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Encontre barbearias e salões próximos</li>
+                            <li><i class="fas fa-check"></i> Veja avaliações e portfólios</li>
+                            <li><i class="fas fa-check"></i> Agendamento 24/7 pelo app ou site</li>
+                            <li><i class="fas fa-check"></i> Notificações e lembretes automáticos</li>
+                        </ul>
+                        <a href="#cadastro" class="btn">Criar Conta</a>
+                    </div>
+
+                    <!-- Para Estabelecimentos -->
+                    <div class="feature-card business">
+                        <div class="feature-icon">
+                            <i class="fas fa-store"></i>
+                        </div>
+                        <h3>Para Estabelecimentos</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Gestão completa de agendamentos</li>
+                            <li><i class="fas fa-check"></i> Aumente sua visibilidade online</li>
+                            <li><i class="fas fa-check"></i> Controle de estoque e finanças</li>
+                            <li><i class="fas fa-check"></i> Ferramentas de marketing integradas</li>
+                        </ul>
+                        <a href="#cadastro-business" class="btn">Cadastrar Meu Negócio</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Nossos Parceiros -->
+        <section id="parceiros" class="partners">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Nossos Parceiros</h2>
+                    <p class="section-subtitle">Barbearias e salões premium em nossa plataforma</p>
+                </div>
+
+                <div class="partners-grid">
+                    <!-- Barbearia 1 -->
+                    <div class="partner-card">
+                        <div class="partner-badge">Premium</div>
+                        <img src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Barbearia Vintage">
+                        <div class="partner-info">
+                            <h3>Barbearia Vintage</h3>
+                            <div class="rating">
+                                <i class="fas fa-star"></i> 4.9 (127 avaliações)
+                            </div>
+                            <p><i class="fas fa-map-marker-alt"></i> Av. Paulista, 1000 - SP</p>
+                            <div class="partner-services">
+                                <span>Cabelo</span>
+                                <span>Barba</span>
+                                <span>Hidratação</span>
+                            </div>
+                            <a href="#" class="btn-book">Ver Perfil</a>
+                        </div>
+                    </div>
+
+                    <!-- Barbearia 2 -->
+                    <div class="partner-card">
+                        <div class="partner-badge">Open Now</div>
+                        <img src="https://images.unsplash.com/photo-1589985494639-69e60c82cab2?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NzJ8fGJhcmJlaXJvfGVufDB8fDB8fHww" alt="The King's Barber">
+                        <div class="partner-info">
+                            <h3>The King's Barber</h3>
+                            <div class="rating">
+                                <i class="fas fa-star"></i> 5.0 (89 avaliações)
+                            </div>
+                            <p><i class="fas fa-map-marker-alt"></i> Rua Oscar Freire, 200 - SP</p>
+                            <div class="partner-services">
+                                <span>Cabelo</span>
+                                <span>Barba</span>
+                                <span>Massagem</span>
+                            </div>
+                            <a href="#" class="btn-book">Ver Perfil</a>
+                        </div>
+                    </div>
+
+                    <!-- Salão 3 -->
+                    <div class="partner-card">
+                        <div class="partner-badge">Novo</div>
+                        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Studio Hair">
+                        <div class="partner-info">
+                            <h3>Studio Hair</h3>
+                            <div class="rating">
+                                <i class="fas fa-star"></i> 4.7 (64 avaliações)
+                            </div>
+                            <p><i class="fas fa-map-marker-alt"></i> Rua Augusta, 500 - SP</p>
+                            <div class="partner-services">
+                                <span>Cabelo</span>
+                                <span>Coloração</span>
+                                <span>Tratamentos</span>
+                            </div>
+                            <a href="#" class="btn-book">Ver Perfil</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="cta-partners">
+                    <p>Seu estabelecimento aqui? <a href="#cadastro-business">Cadastre-se agora!</a></p>
+                    <a href="#" class="btn btn-outline">Ver Todos os Parceiros</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galeria de Estilos -->
+        <section id="galeria" class="styles-gallery">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Inspire-se</h2>
+                    <p class="section-subtitle">Tendências dos nossos parceiros</p>
+                </div>
+
+                <div class="gallery-filter">
+                    <button class="filter-btn active" data-filter="all">Todos</button>
+                    <button class="filter-btn" data-filter="hair">Cabelo</button>
+                    <button class="filter-btn" data-filter="beard">Barba</button>
+                    <button class="filter-btn" data-filter="color">Coloração</button>
+                </div>
+
+                <div class="gallery-grid">
+                    <div class="gallery-item" data-category="hair" data-establishment="Barbearia Vintage">
+                        <img src="https://images.unsplash.com/photo-1648221122323-572c13a31663?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTExfHxiYXJiZWlyb3xlbnwwfHwwfHx8MA%3D%3D" alt="Corte Moderno">
+                        <div class="gallery-overlay">
+                            <p>Corte Degradê</p>
+                            <small>Barbearia Vintage</small>
+                        </div>
+                    </div>
+                    <div class="gallery-item" data-category="beard" data-establishment="The King's Barber">
+                        <img src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGJhcmJhfGVufDB8fDB8fHww" alt="Barba Premium">
+                        <div class="gallery-overlay">
+                            <p>Barba Degradê</p>
+                            <small>The King's Barber</small>
+                        </div>
+                    </div>
+                    <div class="gallery-item" data-category="color" data-establishment="Studio Hair">
+                        <img src="https://images.unsplash.com/photo-1577806934037-32d94e326e84?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8dHJhbiVDMyVBN2FzfGVufDB8fDB8fHww" alt="Tranças">
+                        <div class="gallery-overlay">
+                            <p>Tranças</p>
+                            <small>Studio Hair</small>
+                        </div>
+                    </div>
+                    <div class="gallery-item" data-category="hair" data-establishment="Barbearia Vintage">
+                        <img src="https://images.unsplash.com/photo-1646825209987-6be8fe5f7403?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDN8fGNvcnRlJTIwc29jaWFsJTIwY2FiZWxvfGVufDB8fDB8fHww" alt="Corte Social">
+                        <div class="gallery-overlay">
+                            <p>Corte Social</p>
+                            <small>Barbearia Vintage</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Serviços Disponíveis -->
+        <!-- <section id="servicos" class="services-platform">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Serviços Disponíveis</h2>
+                    <p class="section-subtitle">Agende o serviço que você precisa</p>
+                </div>
+
+                <div class="service-filters">
+                    <button class="filter-btn active" data-type="all">Todos</button>
+                    <button class="filter-btn" data-type="barbershop">Barbearias</button>
+                    <button class="filter-btn" data-type="salon">Salões</button>
+                    <button class="filter-btn" data-type="spa">SPA Masculino</button>
+                </div>
+
+                <div class="services-grid">
+                    <div class="service-card" data-type="barbershop">
+                        <div class="service-icon">
+                            <i class="fas fa-cut"></i>
+                        </div>
+                        <h3>Corte de Cabelo</h3>
+                        <p class="price">A partir de <span>R$ 50,00</span></p>
+                        <p class="time"><i class="fas fa-clock"></i> 40-60 min</p>
+                        <a href="#agendamento" class="btn-book">Agendar</a>
+                    </div>
+                    <div class="service-card" data-type="barbershop">
+                        <div class="service-icon">
+                            <i class="fas fa-air-freshener"></i>
+                        </div>
+                        <h3>Barba Completa</h3>
+                        <p class="price">A partir de <span>R$ 45,00</span></p>
+                        <p class="time"><i class="fas fa-clock"></i> 30-45 min</p>
+                        <a href="#agendamento" class="btn-book">Agendar</a>
+                    </div>
+                    <div class="service-card" data-type="salon">
+                        <div class="service-icon">
+                            <i class="fas fa-spa"></i>
+                        </div>
+                        <h3>Hidratação Capilar</h3>
+                        <p class="price">A partir de <span>R$ 80,00</span></p>
+                        <p class="time"><i class="fas fa-clock"></i> 60 min</p>
+                        <a href="#agendamento" class="btn-book">Agendar</a>
+                    </div>
+                    <div class="service-card" data-type="spa">
+                        <div class="service-icon">
+                            <i class="fas fa-hot-tub"></i>
+                        </div>
+                        <h3>Massagem Relaxante</h3>
+                        <p class="price">A partir de <span>R$ 120,00</span></p>
+                        <p class="time"><i class="fas fa-clock"></i> 50 min</p>
+                        <a href="#agendamento" class="btn-book">Agendar</a>
+                    </div>
+                </div>
+            </div>
+        </section> -->
+
+        <!-- Depoimentos -->
+        <section class="testimonials">
+            <div class="container">
+                <div class="section-header">
+                    <h2>O que dizem sobre nós</h2>
+                    <p class="section-subtitle">Avaliações de clientes e parceiros</p>
+                </div>
+
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Cliente">
+                            <div>
+                                <h4>Marcos Silva</h4>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"Finalmente encontrei uma plataforma que me permite agendar horários em ótimas barbearias sem ter que ficar ligando. O sistema de avaliações me ajudou a escolher onde ir."</p>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-header">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Parceiro">
+                            <div>
+                                <h4>Juliana Oliveira</h4>
+                                <div class="rating">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p>"Como proprietária de um salão, a Time Cut revolucionou nosso fluxo de agendamentos. Reduziu nossas falhas em 70% e trouxe muitos clientes novos."</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Fale Conosco -->
+        <section id="contato" class="contact-platform">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Fale Conosco</h2>
+                    <p class="section-subtitle">Estamos aqui para ajudar</p>
+                </div>
+
+                <div class="contact-grid">
+                    <!-- Suporte Clientes -->
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-user-headset"></i>
+                        </div>
+                        <h3>Suporte ao Cliente</h3>
+                        <p><i class="fas fa-phone"></i> (11) 99999-9999</p>
+                        <p><i class="fas fa-envelope"></i> suporte@timecut.com.br</p>
+                        <p><i class="fas fa-clock"></i> Seg-Sex: 8h-20h | Sáb: 9h-14h</p>
+                    </div>
+
+                    <!-- Suporte Estabelecimentos -->
+                    <div class="contact-card business">
+                        <div class="contact-icon">
+                            <i class="fas fa-store-alt"></i>
+                        </div>
+                        <h3>Parcerias Comerciais</h3>
+                        <p><i class="fas fa-phone"></i> (11) 88888-8888</p>
+                        <p><i class="fas fa-envelope"></i> parceiros@timecut.com.br</p>
+                        <p><i class="fas fa-clock"></i> Seg-Sex: 9h-18h</p>
+                    </div>
+                </div>
+
+                <div class="newsletter">
+                    <h3>Receba Ofertas Exclusivas</h3>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Seu melhor e-mail">
+                        <button type="submit" class="btn">Assinar</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Login -->
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Login</h2>
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="email">E-mail:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha:</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn">Entrar</button>
+                <p class="register-link">Não tem uma conta? <a href="#" id="register-btn">Cadastre-se</a></p>
+                <p class="register-link">É um estabelecimento? <a href="#" id="business-register-btn">Cadastre seu negócio</a></p>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Cadastro -->
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Cadastro</h2>
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-name">Nome Completo:</label>
+                    <input type="text" id="reg-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">E-mail:</label>
+                    <input type="email" id="reg-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Telefone:</label>
+                    <input type="tel" id="reg-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Senha:</label>
+                    <input type="password" id="reg-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirmar Senha:</label>
+                    <input type="password" id="reg-confirm" required>
+                </div>
+                <button type="submit" class="btn">Cadastrar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Cadastro para Estabelecimentos -->
+    <div id="business-register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Cadastro de Estabelecimento</h2>
+            <form id="business-register-form">
+                <div class="form-group">
+                    <label for="business-name">Nome do Estabelecimento:</label>
+                    <input type="text" id="business-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="business-email">E-mail:</label>
+                    <input type="email" id="business-email" required>
+                </div>
+                <div class="form-group">
+                    <label for="business-phone">Telefone:</label>
+                    <input type="tel" id="business-phone" required>
+                </div>
+                <div class="form-group">
+                    <label for="business-address">Endereço:</label>
+                    <input type="text" id="business-address" required>
+                </div>
+                <div class="form-group">
+                    <label for="business-type">Tipo de Estabelecimento:</label>
+                    <select id="business-type" required>
+                        <option value="">Selecione...</option>
+                        <option value="barbershop">Barbearia</option>
+                        <option value="salon">Salão de Beleza</option>
+                        <option value="spa">SPA Masculino</option>
+                        <option value="other">Outro</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">Enviar Cadastro</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal de Agendamento -->
+    <div id="booking-modal" class="modal booking-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="booking-steps">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Serviço</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Estabelecimento</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Data/Hora</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Confirmação</div>
+                </div>
+            </div>
+            
+            <div id="booking-step-1" class="booking-step">
+                <h3>Selecione o Serviço</h3>
+                <!-- Conteúdo será preenchido via JavaScript -->
+            </div>
+            
+            <div id="booking-step-2" class="booking-step" style="display:none;">
+                <h3>Escolha o Estabelecimento</h3>
+                <!-- Conteúdo será preenchido via JavaScript -->
+            </div>
+            
+            <div id="booking-step-3" class="booking-step" style="display:none;">
+                <h3>Escolha a Data e Hora</h3>
+                <div class="calendar-container"></div>
+            </div>
+            
+            <div id="booking-step-4" class="booking-step" style="display:none;">
+                <h3>Confirme seu Agendamento</h3>
+                <div class="booking-summary"></div>
+                <button id="confirm-booking" class="btn">Confirmar Agendamento</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-info">
+                <h3>Time Cut</h3>
+                <p>Plataforma de agendamento para barbearias e salões</p>
+                <p><i class="fas fa-map-marker-alt"></i> Av. Paulista, 1000 - São Paulo/SP</p>
+                <p><i class="fas fa-phone"></i> (11) 4002-8922</p>
+            </div>
+            <div class="footer-links">
+                <h3>Links Rápidos</h3>
+                <ul>
+                    <li><a href="#sobre">Como Funciona</a></li>
+                    <li><a href="#parceiros">Parceiros</a></li>
+                    <li><a href="#servicos">Serviços</a></li>
+                    <li><a href="#contato">Contato</a></li>
+                </ul>
+            </div>
+            <div class="footer-social">
+                <h3>Redes Sociais</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>&copy; 2025 Time Cut. Todos os direitos reservados.</p>
+            <div class="legal-links">
+                <a href="#">Termos de Uso</a>
+                <a href="#">Política de Privacidade</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="Views/Home/home.js"></script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Cut - Agendamento para Barbearias e Salões</title>
     <link rel="stylesheet" href="home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
