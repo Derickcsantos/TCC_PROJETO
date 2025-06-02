@@ -104,6 +104,10 @@ h1, h2, h3, h4, h5, h6 {
   background: #d4af37;
   color: #000;
 }
+.partners-grid {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
 
 /* Header */
 header {
@@ -119,6 +123,7 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 1rem 5%;
+  
 }
 
 .logo-container {
@@ -128,8 +133,8 @@ header {
 }
 
 .logo-container img {
-  height: 80px;
-  width: 80px;
+  height: 50px;
+  width: auto;
 }
 
 .logo-container h1 {
@@ -184,24 +189,48 @@ nav ul li a:hover::after {
 /* Hero Section */
 .hero {
   height: 100vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
-  color: #fff;
+  max-height: 900px; 
+  min-height: 500px; 
+  background: 
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)),
+    url('https://images.unsplash.com/photo-1512864084360-7c0c4d0a0845?ixlib=rb-4.1.0&auto=format&fit=crop&w=1920&q=85') 
+    no-repeat center center/cover;
+  
   display: flex;
   align-items: center;
+  justify-content: center;
   text-align: center;
-  padding-top: 80px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Versão mobile */
+@media (max-width: 768px) {
+  .hero {
+    max-height: 700px;
+    min-height: 400px;
+    background-position: center 30%; 
+  }
 }
 
 .hero-content {
   max-width: 800px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 20px;
+  position: relative;
+  z-index: 2;
 }
 
 .hero h2 {
   font-size: 3.5rem;
   margin-bottom: 1.5rem;
   line-height: 1.2;
+  color: #d4af37;
 }
 
 .hero p {
@@ -445,6 +474,12 @@ nav ul li a:hover::after {
   overflow: hidden;
   height: 250px;
   cursor: pointer;
+  transition: all 0.3s ease;
+}
+@media (hover: hover) {
+  .gallery-item:hover img {
+    transform: scale(1.1);
+  }
 }
 
 .gallery-item img {
@@ -484,7 +519,7 @@ nav ul li a:hover::after {
   font-size: 0.8rem;
 }
 
-/* Services Section
+/* Services Section */
 .services-platform {
   padding: 100px 0;
   background: #f8f9fa;
@@ -552,7 +587,7 @@ nav ul li a:hover::after {
 
 .time i {
   color: #d4af37;
-} */
+}
 
 /* Testimonials */
 .testimonials {
@@ -687,9 +722,8 @@ nav ul li a:hover::after {
 footer {
   background: #222;
   color: #fff;
-  padding-bottom: 80px;
-  padding-left: 25px;
-  padding-top: 25px;
+  padding-top: 80px;
+  text-align: center;
 }
 
 .footer-container {
@@ -697,6 +731,20 @@ footer {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 40px;
   padding-bottom: 60px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.footer-info {
+  text-align: center;
+  padding: 0 20px;
+}
+
+.footer-links, .footer-social {
+  text-align: center;
+  padding: 0 20px;
 }
 
 .footer-info h3 {
