@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clientesContent = document.getElementById('clientes-content');
     const saloesContentEl = document.getElementById('saloes-content');
     // Adicionando referência para o novo conteúdo de usuários
-    const usuariosContent = document.getElementById('usuarios-content'); 
+    const usuariosContent = document.getElementById('usuarios-content');
 
     const clientesLink = document.querySelector('.sidebar-menu a[href="#clientes"]').parentElement;
     const saloesLink = document.querySelector('.sidebar-menu a[href="#saloes"]').parentElement;
@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const clienteForm = document.getElementById('clienteForm');
     const clienteIdInput = document.getElementById('clienteId');
     const saveClienteBtn = document.getElementById('saveClienteBtn');
-    let clienteModal; 
+    let clienteModal;
 
     const clientesCountSpan = document.getElementById('clientes-count');
     const saloesCountSpan = document.getElementById('saloes-count');
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Validação básica dos campos
         if (!nome_cliente || !email_cliente || !telefone_cliente || !regiao_cliente || !senha_cliente) {
             Swal.fire('Atenção!', 'Por favor, preencha todos os campos obrigatórios!', 'warning');
-            return; 
+            return;
         }
 
         const clienteData = {
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
-            const response = await fetch("/api/clientes", { 
+            const response = await fetch("/api/clientes", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Erro ao cadastrar cliente: ${response.status} - ${errorText}`);
             }
 
-            const responseData = await response.json(); 
+            const responseData = await response.json();
 
             Swal.fire('Sucesso!', responseData.message, 'success');
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
             saloesCountSpan.textContent = saloesData.count;
 
             // NOVA REQUISIÇÃO PARA CONTAGEM DE USUÁRIOS
-            const usuariosResponse = await fetch('/api/usuarios/count'); 
+            const usuariosResponse = await fetch('/api/usuarios/count');
             const usuariosData = await usuariosResponse.json();
             usuariosCountSpan.textContent = usuariosData.count;
 
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função para exibir os clientes na tabela
     function displayClientes(clientes) {
-        clientesTableBody.innerHTML = ''; 
+        clientesTableBody.innerHTML = '';
         clientes.forEach(cliente => {
             const row = clientesTableBody.insertRow();
             row.insertCell().textContent = cliente.id_cliente;
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('email').value = cliente.email_cliente;
         document.getElementById('telefone').value = cliente.telefone_cliente || '';
         document.getElementById('regiao').value = cliente.região_cliente || '';
-        document.getElementById('senha').value = ''; 
+        document.getElementById('senha').value = '';
     }
 
     async function deleteCliente(id) {
@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorData.error || `Erro HTTP! Status: ${response.status}`);
             }
             Swal.fire('Sucesso!', 'Cliente deletado com sucesso.', 'success');
-            await fetchClientes(); 
+            await fetchClientes();
             fetchCounts(); // Atualiza as contagens
         } catch (error) {
             console.error('Erro ao deletar cliente:', error);
@@ -263,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
         clientesContent.style.display = 'block';
         saloesContentEl.style.display = 'none';
         usuariosContent.style.display = 'none'; // Oculta a seção de usuários
-        fetchClientes(); 
+        fetchClientes();
     });
 
     saloesLink.addEventListener('click', (e) => {
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             Swal.fire('Sucesso!', `Cliente ${isEdit ? 'atualizado' : 'adicionado'} com sucesso.`, 'success');
             clienteModal.hide();
-            await fetchClientes(); 
+            await fetchClientes();
             fetchCounts(); // Atualiza as contagens
         } catch (error) {
             console.error('Erro ao salvar/atualizar cliente:', error);
@@ -527,23 +527,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função para exibir os usuários donos na tabela
     function displayUsuarios(usuarios) {
-        usuariosTableBody.innerHTML = ''; // Limpa a tabela
-        usuarios.forEach(usuario => {
-            const row = usuariosTableBody.insertRow();
-            row.insertCell().textContent = usuario.id_dono;
-            row.insertCell().textContent = usuario.nome_dono;
-            row.insertCell().textContent = usuario.email_dono;
-            row.insertCell().textContent = usuario.usuario;
-            row.insertCell().textContent = usuario.CPF;
-            row.insertCell().textContent = usuario.telefone_dono;
-            const actionsCell = row.insertCell();
-            actionsCell.innerHTML = `
-                <button class="btn btn-sm btn-primary edit-usuario-btn" data-id="${usuario.id_usuario}"><i class="fas fa-edit"></i> Editar</button>
-                <button class="btn btn-sm btn-danger delete-usuario-btn" data-id="${usuario.id_usuario}"><i class="fas fa-trash-alt"></i> Deletar</button>
-            `;
-        });
-        addEventListenersToUsuarioActions();
-    }
+    usuariosTableBody.innerHTML = ''; // Limpa a tabela
+    usuarios.forEach(usuario => {
+        const row = usuariosTableBody.insertRow();
+        row.insertCell().textContent = usuario.id_dono; // OK, usando id_dono para exibir
+        row.insertCell().textContent = usuario.nome_dono;
+        row.insertCell().textContent = usuario.email_dono;
+        row.insertCell().textContent = usuario.usuario;
+        row.insertCell().textContent = usuario.CPF;
+        row.insertCell().textContent = usuario.telefone_dono;
+        const actionsCell = row.insertCell();
+        actionsCell.innerHTML = `
+            <button class="btn btn-sm btn-primary edit-usuario-btn" data-id="${usuario.id_dono}"><i class="fas fa-edit"></i> Editar</button>
+            <button class="btn btn-sm btn-danger delete-usuario-btn" data-id="${usuario.id_dono}"><i class="fas fa-trash-alt"></i> Deletar</button>
+        `;
+    });
+    addEventListenersToUsuarioActions();
+}
 
     // Adiciona event listeners aos botões de editar e deletar usuários
     function addEventListenersToUsuarioActions() {
@@ -555,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await fetchUsuarioDetails(usuarioId);
                 // Torna a senha não obrigatória na edição e mostra a dica
                 document.getElementById('senhaDono').removeAttribute('required');
-                document.getElementById('senhaDonoHelp').style.display = 'block'; 
+                document.getElementById('senhaDonoHelp').style.display = 'block';
                 usuarioModal.show();
             });
         });
@@ -598,12 +598,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Preenche o formulário do modal com os dados do usuário dono
     function populateUsuarioForm(usuario) {
-        document.getElementById('nomeDono').value = usuario.nome_dono;
-        document.getElementById('emailDono').value = usuario.email_dono;
-        document.getElementById('usuarioDono').value = usuario.usuario;
-        document.getElementById('cpfDono').value = usuario.CPF;
-        document.getElementById('telefoneDono').value = usuario.telefone_dono;
-        document.getElementById('senhaDono').value = ''; // Nunca preenche a senha
+        document.getElementById('usuarioId').value = usuario.id_dono || '';
+        document.getElementById('nomeDono').value = usuario.nome_dono || ''; // <-- Ajustado
+        document.getElementById('emailDono').value = usuario.email_dono || ''; // <-- Ajustado
+        document.getElementById('usuarioDono').value = usuario.usuario || ''; // <-- Ajustado
+        document.getElementById('cpfDono').value = usuario.CPF || ''; // <-- Ajustado
+        document.getElementById('telefoneDono').value = usuario.telefone_dono || ''; // <-- Ajustado
+        document.getElementById('senhaDono').value = ''; // Sempre limpa a senha para edição
+        document.getElementById('senhaDonoHelp').style.display = 'block'; // Mostra a mensagem de ajuda
+        document.getElementById('usuarioModalTitle').textContent = 'Editar Usuário Dono';
+        usuarioModal.show();
     }
 
     // Deleta um usuário dono
@@ -630,7 +634,7 @@ document.addEventListener('DOMContentLoaded', () => {
         usuarioIdInput.value = ''; // Limpa o ID para adicionar um novo usuário
         // Torna a senha obrigatória ao adicionar e esconde a dica
         document.getElementById('senhaDono').setAttribute('required', 'required');
-        document.getElementById('senhaDonoHelp').style.display = 'none'; 
+        document.getElementById('senhaDonoHelp').style.display = 'none';
         usuarioModal.show();
     });
 
@@ -642,26 +646,29 @@ document.addEventListener('DOMContentLoaded', () => {
         const cpf = document.getElementById('cpfDono').value;
         const telefone = document.getElementById('telefoneDono').value;
         const senha = document.getElementById('senhaDono').value;
-        const idUsuario = usuarioIdInput.value;
+        const idUsuario = usuarioIdInput.value; // Assumindo que usuarioIdInput está definido (ex: document.getElementById('usuarioId'))
         const isEdit = idUsuario !== '';
 
         // Validação básica dos campos obrigatórios
+        // Para criação, todos os campos são obrigatórios. Para edição, a senha é opcional.
         if (!nomeCompleto || !email || !nomeUsuario || !cpf || (!isEdit && !senha)) {
             Swal.fire('Atenção!', 'Por favor, preencha todos os campos obrigatórios!', 'warning');
             return;
         }
 
+        // AQUI ESTÁ A MUDANÇA CRÍTICA: Os nomes das propriedades devem corresponder às colunas do seu DB
         const usuarioData = {
-            nome_completo: nomeCompleto,
-            email: email,
-            nome_usuario: nomeUsuario,
-            cpf: cpf,
-            telefone: telefone,
+            nome_dono: nomeCompleto,    // Corresponde à coluna 'nome_dono'
+            email_dono: email,          // Corresponde à coluna 'email_dono'
+            usuario: nomeUsuario,       // Corresponde à coluna 'usuario'
+            CPF: cpf,                   // Corresponde à coluna 'CPF'
+            telefone_dono: telefone,    // Corresponde à coluna 'telefone_dono'
         };
 
         // Adiciona a senha apenas se estiver preenchida OU se for uma nova adição
         if (senha || !isEdit) {
-            usuarioData.senha_hash = senha; // Assumindo que o backend espera 'senha_hash' para a senha
+            // A propriedade para a senha deve ser 'senha_dono' (nome da coluna no DB)
+            usuarioData.senha_dono = senha;
         }
 
         const url = isEdit ? `/api/usuarios/${idUsuario}` : '/api/usuarios';
@@ -683,7 +690,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             Swal.fire('Sucesso!', `Usuário dono ${isEdit ? 'atualizado' : 'adicionado'} com sucesso.`, 'success');
-            usuarioModal.hide();
+            usuarioModal.hide(); // Assumindo que usuarioModal é uma instância de Bootstrap.Modal
             await fetchUsuarios(); // Recarrega a lista
             fetchCounts(); // Atualiza as contagens
         } catch (error) {
