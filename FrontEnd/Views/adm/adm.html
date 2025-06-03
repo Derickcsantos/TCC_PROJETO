@@ -18,8 +18,8 @@
                 <li class="active"><a href="#dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
                 <li><a href="#clientes"><i class="fas fa-users"></i> Clientes</a></li>
                 <li><a href="#saloes"><i class="fas fa-store"></i> Salões</a></li>
-                <li><a href="#usuarios"><i class="fas fa-user-cog"></i> Usuários</a></li> <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
-                <li><a href="#sair"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                <li><a href="#usuarios"><i class="fas fa-user-cog"></i> Usuários</a>
+                <li><a href="#sair" onclick=window.location.href="/loginC"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
             </ul>
         </div>
 
@@ -230,7 +230,7 @@
             <div class="content-section" id="usuarios-content" style="display: none;">
                 <div class="section-header">
                     <h2>Gerenciamento de Usuários Donos</h2>
-                    <button class="btn btn-info" id="add-usuario-btn" data-bs-toggle="modal" data-bs-target="#usuarioModal">
+                    <button class="btn btn-info" id="add-usuario-btn" data-bs-toggle="modal" data-bs-target="#usuarioModal" onclick=window.location.href="/cadastro_usuario">
                         <i class="fas fa-plus"></i> Adicionar Usuário Dono
                     </button>
                 </div>
